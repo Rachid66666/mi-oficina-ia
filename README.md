@@ -1,4 +1,4 @@
-# Mi Oficina IA
+# Oficio
 
 Programa de gestión con IA para autónomos y pequeñas empresas de España y Latinoamérica. Incluye clientes, agenda, trabajos, presupuestos, facturas, gastos y un asistente que lo hace todo hablando.
 

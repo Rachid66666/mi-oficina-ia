@@ -1,11 +1,11 @@
 {
-  "name": "Mi Oficina IA",
-  "short_name": "Oficina IA",
-  "description": "Clientes, agenda, presupuestos y facturas con IA para autónomos y pequeñas empresas.",
+  "name": "Oficio",
+  "short_name": "Oficio",
+  "description": "Presupuestos, facturas, clientes y agenda con IA para autónomos y pequeñas empresas.",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#111111",
-  "theme_color": "#111111",
+  "background_color": "#f4f6fb",
+  "theme_color": "#1f3fbf",
   "lang": "es",
   "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
 }

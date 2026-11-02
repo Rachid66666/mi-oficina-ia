@@ -1,4 +1,4 @@
-/* Runtime de Mi Oficina IA.
+/* Runtime de Oficio.
    Da al programa (index.html) lo que necesita fuera de Claude: cuentas de usuario, base de datos
    por cliente, IA, descargas y fotos. Todo va contra Supabase; la IA pasa por la función "ai",
    que guarda la clave de Anthropic en el servidor (nunca llega al navegador).
@@ -7,7 +7,7 @@
   const cfg = window.APP_CONFIG || {};
   const live = !!(cfg.supabaseUrl && cfg.supabaseAnonKey && window.supabase);
   const sb = live ? window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey) : null;
-  const RT = { appName: cfg.appName || 'Mi Oficina IA', standalone: true, live, user: null };
+  const RT = { appName: cfg.appName || 'Oficio', standalone: true, live, user: null };
   window.RT = RT;
   document.title = RT.appName;
 
@@ -27,13 +27,22 @@
   document.addEventListener('click', e => { if (e.target.closest('[data-rtlogout]')) RT.logout(); });
 
   /* ---------------- pantalla de acceso ---------------- */
-  const css = `#rt-login{position:fixed;inset:0;z-index:9999;background:#111;display:grid;place-items:center;padding:16px;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
-  #rt-login .bx{width:100%;max-width:400px;background:#1b1b1b;border:1px solid #333;border-top:4px solid #ffc400;border-radius:14px;padding:26px;color:#f3f3f3}
-  #rt-login h1{font-size:1.5rem;margin:0 0 4px;color:#ffc400}#rt-login p{margin:0 0 16px;color:#bbb;font-size:.95rem;line-height:1.4}
-  #rt-login label{display:block;font-size:.85rem;color:#ccc;margin:10px 0 4px}#rt-login input{width:100%;box-sizing:border-box;padding:11px 12px;border-radius:9px;border:1px solid #444;background:#111;color:#fff;font-size:1rem}
-  #rt-login button{width:100%;margin-top:16px;padding:12px;border:0;border-radius:9px;background:#ffc400;color:#111;font-weight:700;font-size:1rem;cursor:pointer}#rt-login button[disabled]{opacity:.6}
-  #rt-login .lk{display:flex;justify-content:space-between;gap:10px;margin-top:14px;font-size:.88rem}#rt-login a{color:#ffd54a;cursor:pointer;text-decoration:underline}
-  #rt-login .msg{margin-top:12px;font-size:.9rem;min-height:1.2em}#rt-login .msg.err{color:#ff8a80}#rt-login .msg.ok{color:#9be7a0}`;
+  const css = `#rt-login{position:fixed;inset:0;z-index:9999;background:linear-gradient(160deg,#1f3fbf 0%,#2a4fe0 45%,#f4f6fb 45.1%);overflow:auto;display:flex;flex-direction:column;align-items:center;padding:calc(28px + env(safe-area-inset-top,0px)) 16px 28px;font-family:"Public Sans",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#0f1733}
+  #rt-login .top{width:100%;max-width:420px;color:#fff;margin-bottom:18px}
+  #rt-login .lg{display:flex;align-items:center;gap:10px;font:700 1.5rem "Bricolage Grotesque",system-ui,sans-serif}
+  #rt-login .lg svg{width:44px;height:44px;border-radius:12px;box-shadow:0 0 0 2px rgba(255,255,255,.35)}
+  #rt-login .tag{margin:10px 0 0;font-size:1.05rem;line-height:1.4;opacity:.95}
+  #rt-login .bx{width:100%;max-width:420px;background:#fff;border-radius:20px;padding:24px;box-shadow:0 16px 48px rgba(15,23,51,.18)}
+  #rt-login h1{font:700 1.4rem "Bricolage Grotesque",system-ui,sans-serif;margin:0 0 4px}#rt-login p.sub{margin:0 0 14px;color:#566080;font-size:.95rem;line-height:1.45}
+  #rt-login label{display:block;font-size:.9rem;font-weight:600;margin:12px 0 5px}#rt-login input{width:100%;box-sizing:border-box;padding:13px 14px;border-radius:12px;border:1px solid #dde2ee;background:#f8f9fd;color:#0f1733;font-size:16px}
+  #rt-login input:focus{outline:2px solid #1f3fbf;outline-offset:1px;background:#fff}
+  #rt-login button{width:100%;margin-top:18px;padding:14px;border:0;border-radius:12px;background:#1f3fbf;color:#fff;font-weight:700;font-size:1.05rem;cursor:pointer;box-shadow:0 4px 14px rgba(31,63,191,.3)}#rt-login button[disabled]{opacity:.6}
+  #rt-login button.alt{background:#fff0e6;color:#c2410c;box-shadow:none;margin-top:10px}
+  #rt-login .lk{display:flex;justify-content:center;gap:10px;margin-top:14px;font-size:.92rem}#rt-login a{color:#1f3fbf;cursor:pointer;text-decoration:underline;font-weight:600}
+  #rt-login .msg{margin-top:12px;font-size:.95rem;min-height:1.2em;line-height:1.4}#rt-login .msg.err{color:#c0352b}#rt-login .msg.ok{color:#147a4b}
+  #rt-login ul{list-style:none;padding:0;margin:18px 0 0;width:100%;max-width:420px;display:grid;gap:8px;font-size:.95rem;color:#566080}
+  #rt-login li{display:flex;gap:10px;align-items:center;background:#fff;border:1px solid #dde2ee;border-radius:12px;padding:10px 12px}
+  #rt-login li b{color:#0f1733}#rt-login li i{font-style:normal;width:30px;height:30px;border-radius:9px;background:#e8edff;display:grid;place-items:center;flex:none}`;
   function showLogin(mode) {
     if (!document.body) { document.addEventListener('DOMContentLoaded', () => showLogin(mode)); return; }
     let el = document.getElementById('rt-login');
@@ -42,16 +51,19 @@
       el = document.createElement('div'); el.id = 'rt-login'; document.body.appendChild(el);
     }
     const t = {
-      login: ['Entra en tu oficina', 'Clientes, agenda, presupuestos y facturas con IA.', 'Entrar'],
-      signup: ['Crea tu cuenta gratis', 'En un minuto tienes tu oficina lista. La IA te prepara el catálogo de precios.', 'Crear cuenta'],
+      login: ['Entrar', 'Escribe el email y la contraseña con los que te registraste.', 'Entrar'],
+      signup: ['Crea tu cuenta gratis', 'Solo tu email y una contraseña. Después te pedimos el nombre de tu negocio.', 'Crear mi cuenta'],
       reset: ['Recuperar contraseña', 'Te mandamos un email con un enlace para poner una nueva.', 'Enviar enlace'],
       newpass: ['Nueva contraseña', 'Escribe tu nueva contraseña.', 'Guardar contraseña']
     }[mode];
-    el.innerHTML = `<form class="bx" id="rt-f"><h1>${esc(RT.appName)}</h1><p><b style="color:#fff">${t[0]}</b><br>${t[1]}</p>
-      ${mode !== 'newpass' ? '<label for="rt-em">Email</label><input id="rt-em" type="email" autocomplete="email" required>' : ''}
-      ${mode !== 'reset' ? `<label for="rt-pw">Contraseña</label><input id="rt-pw" type="password" minlength="6" autocomplete="${mode === 'login' ? 'current-password' : 'new-password'}" required>` : ''}
-      <button type="submit">${t[2]}</button><div class="msg" id="rt-msg"></div>
-      <div class="lk">${mode === 'login' ? '<a data-m="signup">Crear cuenta</a><a data-m="reset">He olvidado la contraseña</a>' : mode === 'newpass' ? '' : '<a data-m="login">Ya tengo cuenta</a>'}</div></form>`;
+    const logo = '<svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#1f3fbf"/><path d="M20 33.5l8 8 16-18" fill="none" stroke="#fff" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="48" cy="16" r="6" fill="#ff7a2f"/></svg>';
+    el.innerHTML = `<div class="top"><div class="lg">${logo}${esc(RT.appName)}</div><p class="tag">Presupuestos, facturas, clientes y agenda desde el móvil. Fácil, aunque no sepas de ordenadores.</p></div>
+      <form class="bx" id="rt-f"><h1>${t[0]}</h1><p class="sub">${t[1]}</p>
+      ${mode !== 'newpass' ? '<label for="rt-em">Tu email</label><input id="rt-em" type="email" inputmode="email" autocomplete="email" placeholder="nombre@ejemplo.com" required>' : ''}
+      ${mode !== 'reset' ? `<label for="rt-pw">${mode === 'login' ? 'Tu contraseña' : 'Elige una contraseña (mínimo 6 letras o números)'}</label><input id="rt-pw" type="password" minlength="6" autocomplete="${mode === 'login' ? 'current-password' : 'new-password'}" required>` : ''}
+      <button type="submit">${t[2]}</button>${mode === 'login' ? '<button type="button" class="alt" data-m="signup">Soy nuevo: crear cuenta gratis</button>' : ''}<div class="msg" id="rt-msg"></div>
+      <div class="lk">${mode === 'login' ? '<a data-m="reset">He olvidado la contraseña</a>' : mode === 'newpass' ? '' : '<a data-m="login">Ya tengo cuenta, quiero entrar</a>'}</div></form>
+      ${mode === 'signup' || mode === 'login' ? '<ul><li><i>📄</i><span><b>Presupuestos en 1 minuto</b> con PDF para enviar por WhatsApp</span></li><li><i>💶</i><span><b>Facturas</b> con el número y los impuestos automáticos</span></li><li><i>🎙️</i><span><b>Háblale</b> y la IA lo apunta por ti</span></li></ul>' : ''}`;
     el.querySelectorAll('[data-m]').forEach(a => (a.onclick = () => showLogin(a.dataset.m)));
     const f = el.querySelector('#rt-f'), msg = el.querySelector('#rt-msg');
     const say = (m, ok) => { msg.textContent = m; msg.className = 'msg ' + (ok ? 'ok' : 'err'); };
@@ -237,8 +249,8 @@
     if (!b || b.paid) { if (el) el.remove(); document.body.style.paddingBottom = ''; return; }
     if (!el) {
       const st = document.createElement('style');
-      st.textContent = `#rt-bill{position:fixed;left:0;right:0;bottom:0;z-index:900;display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;padding:8px 14px;font:600 14px system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#ffc400;color:#111}
-      #rt-bill.end{background:#b3261e;color:#fff}#rt-bill button{border:0;border-radius:8px;padding:7px 14px;font-weight:700;cursor:pointer;background:#111;color:#ffc400}#rt-bill.end button{background:#fff;color:#b3261e}`;
+      st.textContent = `#rt-bill{position:fixed;left:0;right:0;bottom:0;z-index:900;display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;padding:8px 14px;font:600 14px system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#ff7a2f;color:#fff}
+      #rt-bill.end{background:#b3261e;color:#fff}#rt-bill button{border:0;border-radius:8px;padding:7px 14px;font-weight:700;cursor:pointer;background:#fff;color:#c2410c}#rt-bill.end button{background:#fff;color:#b3261e}`;
       document.head.appendChild(st);
       el = document.createElement('div'); el.id = 'rt-bill'; document.body.appendChild(el);
     }

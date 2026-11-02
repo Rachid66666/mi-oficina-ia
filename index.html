@@ -2,39 +2,42 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#111111">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Oficio">
+<meta name="theme-color" content="#1f3fbf">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
-<title>Mi Oficina IA</title>
+<title>Oficio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
 /* Layout: barra lateral fija con los agentes + área de trabajo; en móvil la barra pasa a pestañas arriba */
 :root{
-  --yellow:#ffc400; --yellow-soft:#fff4c7;
-  --bg:#f5f4ef; --surface:#ffffff; --surface-2:#efede4; --ink:#141414; --muted:#5d5a50; --line:#dcd8cb;
-  --accent:#141414; --accent-soft:#fff1b8; --accent-ink:#ffd21f; --pine:#121212; --pine-soft:#fff1b8;
-  --ok:#2b7a4b; --ok-soft:#dcefe3; --warn:#9a6312; --warn-soft:#f6ead2; --bad:#b4372a; --bad-soft:#f7dfdb;
-  --shadow:0 1px 2px rgba(20,20,20,.06),0 4px 16px rgba(20,20,20,.06);
-  --c-panel:#ffc400; --c-asistente:#ffc400; --c-clientes:#ffc400; --c-agenda:#ffc400; --c-trabajos:#ffc400; --c-presupuestos:#ffc400; --c-facturas:#ffc400; --c-gastos:#ffc400; --c-mensajes:#ffc400; --c-ajustes:#ffc400;
-  --m-ink:#141414;
+  --yellow:#ff7a2f; --yellow-soft:#fff0e6;
+  --bg:#f4f6fb; --surface:#ffffff; --surface-2:#eef1f8; --ink:#0f1733; --muted:#566080; --line:#dde2ee;
+  --accent:#1f3fbf; --accent-soft:#e8edff; --accent-ink:#ffffff; --pine:#1f3fbf; --pine-soft:#e8edff;
+  --ok:#147a4b; --ok-soft:#dcf3e7; --warn:#a15c07; --warn-soft:#fdf0d9; --bad:#c0352b; --bad-soft:#fde3e0;
+  --shadow:0 1px 2px rgba(15,23,51,.05),0 6px 20px rgba(15,23,51,.07);
+  --c-panel:#1f3fbf; --c-asistente:#7c3aed; --c-clientes:#0b7fab; --c-agenda:#0f8a5f; --c-trabajos:#b45309; --c-presupuestos:#e8590c; --c-facturas:#0d8a80; --c-gastos:#d6336c; --c-mensajes:#2f9e44; --c-ajustes:#55607a;
+  --m-ink:#ffffff;
   --f-display:"Bricolage Grotesque","Public Sans",system-ui,sans-serif;
   --f-body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --r:14px; --tab-h:0px;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0c0c0b; --surface:#171714; --surface-2:#211f1a; --ink:#f2f0e8; --muted:#a6a293; --line:#302d26;
-  --accent:#ffc400; --accent-soft:#2e2709; --accent-ink:#121212; --pine:#ffc400; --pine-soft:#2e2709; --yellow-soft:#2e2709;
-  --ok:#62c48d; --ok-soft:#173326; --warn:#e2ab52; --warn-soft:#3a2d16; --bad:#ef7a69; --bad-soft:#3c1f1b;
-  --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.25);
+  --bg:#0b1020; --surface:#141a2e; --surface-2:#1c2440; --ink:#eef1fa; --muted:#9aa3bf; --line:#2a3352;
+  --accent:#8ea2ff; --accent-soft:#1d2654; --accent-ink:#0b1020; --pine:#8ea2ff; --pine-soft:#1d2654; --yellow:#ff9a5c; --yellow-soft:#3a2414;
+  --ok:#5fd39a; --ok-soft:#143323; --warn:#f0b35a; --warn-soft:#3a2b14; --bad:#ff8577; --bad-soft:#3d1c19;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.3);
   color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#0c0c0b; --surface:#171714; --surface-2:#211f1a; --ink:#f2f0e8; --muted:#a6a293; --line:#302d26;
-  --accent:#ffc400; --accent-soft:#2e2709; --accent-ink:#121212; --pine:#ffc400; --pine-soft:#2e2709; --yellow-soft:#2e2709;
-  --ok:#62c48d; --ok-soft:#173326; --warn:#e2ab52; --warn-soft:#3a2d16; --bad:#ef7a69; --bad-soft:#3c1f1b;
-  --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.25);
+  --bg:#0b1020; --surface:#141a2e; --surface-2:#1c2440; --ink:#eef1fa; --muted:#9aa3bf; --line:#2a3352;
+  --accent:#8ea2ff; --accent-soft:#1d2654; --accent-ink:#0b1020; --pine:#8ea2ff; --pine-soft:#1d2654; --yellow:#ff9a5c; --yellow-soft:#3a2414;
+  --ok:#5fd39a; --ok-soft:#143323; --warn:#f0b35a; --warn-soft:#3a2b14; --bad:#ff8577; --bad-soft:#3d1c19;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.3);
   color-scheme:dark}
 
 *{box-sizing:border-box}
@@ -196,7 +199,7 @@ table.wk tr.wkdet td{background:var(--bg);padding:8px 12px}
  table.wk tr.sel{background:var(--accent-soft)} table.wk tr.wkdet{background:var(--bg)} table.wk td.hide-m{display:none}
  table.wk td[data-l]::before{content:attr(data-l);display:block;font-family:var(--f-sans,inherit);font-size:.72rem;color:var(--muted);font-weight:600}}
 
-.overlay{position:fixed;inset:0;background:rgba(8,16,13,.45);display:flex;align-items:flex-start;justify-content:center;padding:max(24px,env(safe-area-inset-top,0px)) 16px 24px;overflow:auto;z-index:20}
+.overlay{position:fixed;inset:0;background:rgba(10,16,40,.5);display:flex;align-items:flex-start;justify-content:center;padding:max(24px,env(safe-area-inset-top,0px)) 16px 24px;overflow:auto;z-index:50}
 .modal{background:var(--bg);border-radius:14px;width:min(760px,100%);box-shadow:0 20px 60px rgba(0,0,0,.3);display:flex;flex-direction:column}
 .modal-h{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--line);gap:12px}
 .modal-b{padding:18px 20px;display:flex;flex-direction:column;gap:14px}
@@ -215,7 +218,7 @@ table.wk tr.wkdet td{background:var(--bg);padding:8px 12px}
 .invoice table th{color:#666;border-color:#ddd}
 .invoice table td{border-color:#eee}
 .inv-top{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:20px}
-.toast{position:fixed;bottom:calc(20px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:600;z-index:40;font-size:.9rem;max-width:calc(100% - 32px)}
+.toast{z-index:60!important;position:fixed;bottom:calc(20px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:600;z-index:40;font-size:.9rem;max-width:calc(100% - 32px)}
 .ask{display:flex;gap:8px}
 .gev{display:grid;grid-template-columns:62px minmax(0,1fr) auto;gap:12px;align-items:center;padding:6px 0;border-top:1px dashed var(--line);color:var(--muted);font-size:.88rem}
 .gev .t{font-family:var(--f-mono)}
@@ -299,6 +302,140 @@ a.lnk:hover{text-decoration:underline}
   .cat-row{grid-template-columns:minmax(0,1fr) 70px 70px auto}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* ===== Oficio: marca y móvil ===== */
+body{font-size:16px}
+.side{background:var(--surface);color:var(--ink);border-right:1px solid var(--line)}
+:root[data-theme="dark"] .side{background:var(--surface);color:var(--ink)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .side{background:var(--surface);color:var(--ink)}}
+.brand b{font-size:1.1rem}
+.brand span{color:var(--muted);opacity:1}
+.nav button{opacity:1;color:var(--ink);padding:9px 10px;border-radius:10px}
+.nav button:hover{background:var(--surface-2)}
+.nav button[aria-current="true"]{background:var(--accent-soft);color:var(--accent)}
+.nav button[aria-current="true"] .icobox{background:var(--m);color:#fff;box-shadow:none}
+.nav .badge{background:var(--yellow);color:#fff}
+.side-foot{opacity:1;color:var(--muted)}
+.btn{border-radius:10px;min-height:42px;padding:9px 16px}
+.btn.sm{min-height:34px;padding:5px 12px}
+.btn.primary{box-shadow:0 2px 8px color-mix(in srgb,var(--accent) 30%,transparent)}
+.btn.agent{background:var(--accent-soft);color:var(--accent)}
+.btn.big{font-size:1.02rem;padding:13px 20px;min-height:50px}
+.card,.kpi{border-radius:var(--r);box-shadow:var(--shadow);border-color:var(--line)}
+.kpi{border-top:0}
+.kpi .l::before{width:10px;height:10px}
+.hero{border-left:0;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);padding:18px 20px}
+.hero::after{display:none}
+.hero-ico{background:var(--m);color:#fff;box-shadow:none;width:52px;height:52px;border-radius:14px}
+.hero-ico svg{width:28px;height:28px}
+.head .eyebrow{display:none}
+.hero h1{font-size:1.55rem}
+.snap .big{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.qa{border-radius:16px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);font-size:1rem;font-weight:700;padding:16px;min-height:118px;transition:transform .12s}
+.qa:hover{border-color:var(--m)}
+.qa .icobox{width:44px;height:44px;border-radius:12px}
+.qa .icobox svg{width:24px;height:24px}
+.qa small{font-size:.82rem}
+.quick.main{grid-template-columns:repeat(4,minmax(0,1fr))}
+.quick.main .qa{min-height:132px}
+.quick.more{grid-template-columns:repeat(4,minmax(0,1fr))}
+.quick.more .qa{min-height:0;flex-direction:row;align-items:center;font-size:.92rem;padding:12px}
+.quick.more .qa .icobox{width:36px;height:36px}
+.quick.more .qa small{display:none}
+.hello h1{font-size:1.7rem}
+.hello p{color:var(--muted);margin-top:4px}
+.sec-t{font-family:var(--f-display);font-size:1.05rem;font-weight:700;margin:4px 2px -8px}
+input[type=text],input[type=search],input[type=email],input[type=tel],input[type=number],input[type=date],input[type=time],select,textarea{border-radius:10px;padding:11px 12px;min-height:46px}
+label.f{font-size:.88rem;color:var(--ink)}
+.chip{padding:8px 13px;font-size:.88rem}
+.msg.u{background:var(--accent);color:var(--accent-ink)}
+.tcol{border-top-color:var(--accent)}
+a.lnk{text-decoration-color:var(--yellow)}
+.pill.info{background:var(--accent-soft);color:var(--accent)}
+details.more{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:0}
+details.more>summary{list-style:none;cursor:pointer;padding:12px 14px;font-weight:700;display:flex;justify-content:space-between;align-items:center}
+details.more>summary::-webkit-details-marker{display:none}
+details.more>summary::after{content:"+";font-size:1.3rem;line-height:1;color:var(--muted)}
+details.more[open]>summary::after{content:"–"}
+details.more>.form{padding:0 14px 14px}
+.step-t{font-weight:700;font-size:.95rem;display:flex;align-items:center;gap:8px}
+.step-t i{font-style:normal;width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:inline-grid;place-items:center;font-size:.8rem}
+.lines-m{display:flex;flex-direction:column;gap:10px}
+.line-c{border:1px solid var(--line);border-radius:12px;padding:10px;background:var(--surface);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;gap:8px;align-items:end}
+.line-c .lc-con{grid-column:1/-1}
+.line-c .lc-imp{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;font-weight:700}
+.line-c label{display:flex;flex-direction:column;gap:3px;font-size:.78rem;color:var(--muted);font-weight:600}
+.totals{background:var(--surface-2);border-radius:12px;padding:12px 14px;justify-content:stretch;grid-template-columns:1fr auto}
+.totals .grand{font-size:1.2rem}
+.newcli{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
+.tabbar,.topact{display:none}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.newcli[hidden],[hidden]{display:none!important}
+.sheet-ov{align-items:flex-end;padding:0}
+.sheet{background:var(--bg);width:min(560px,100%);border-radius:22px 22px 0 0;padding:10px 16px calc(18px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px;box-shadow:0 -10px 40px rgba(0,0,0,.25);animation:up .18s ease-out}
+@keyframes up{from{transform:translateY(30px);opacity:.4}to{transform:none;opacity:1}}
+.sheet-grab{width:44px;height:5px;border-radius:9px;background:var(--line);margin:2px auto 4px}
+.sheet h2{font-size:1.15rem;padding:0 4px}
+.sheet .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.sheet .sb{border:1px solid var(--line);background:var(--surface);border-radius:16px;padding:14px 6px;display:flex;flex-direction:column;align-items:center;gap:8px;font-weight:700;font-size:.86rem;cursor:pointer;color:var(--ink);text-align:center;position:relative;min-height:96px;justify-content:center}
+.sheet .sb .icobox{width:44px;height:44px;border-radius:13px}
+.sheet .sb .icobox svg{width:24px;height:24px}
+.sheet .sb .badge{position:absolute;top:8px;right:10px;background:var(--yellow);color:#fff;border-radius:99px;font-size:.72rem;padding:0 7px}
+.sheet .sheet-foot{display:flex;gap:8px;justify-content:space-between;align-items:center;flex-wrap:wrap;font-size:.85rem;color:var(--muted);padding:0 4px}
+@media (max-width:1100px){.quick.main{grid-template-columns:repeat(2,minmax(0,1fr))}.quick.more{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:860px){
+  :root{--tab-h:calc(66px + env(safe-area-inset-bottom,0px))}
+  .side{position:sticky;top:0;padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px;border-right:0;border-bottom:1px solid var(--line);justify-content:space-between}
+  .nav{display:none}
+  .brand b{display:block!important;font-size:1.05rem;max-width:60vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .brand span{display:block!important;font-size:.78rem}
+  .topact{display:flex;gap:6px}
+  .topact button{width:42px;height:42px;border-radius:12px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;cursor:pointer;color:var(--ink)}
+  .topact svg{width:22px;height:22px}
+  main{padding-inline:14px;padding-top:16px;padding-bottom:calc(var(--tab-h) + 40px);gap:16px}
+  .tabbar{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px));box-shadow:0 -4px 24px rgba(15,23,51,.08)}
+  .tabbar button{border:0;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:.72rem;font-weight:700;color:var(--muted);min-height:54px;position:relative;cursor:pointer;padding:0}
+  .tabbar button svg{width:25px;height:25px}
+  .tabbar button[aria-current="true"]{color:var(--accent)}
+  .tabbar button[aria-current="true"] .ti{background:var(--accent-soft)}
+  .tabbar .ti{width:52px;height:30px;border-radius:99px;display:grid;place-items:center}
+  .tabbar .plus .ti{width:56px;height:56px;border-radius:50%;background:var(--yellow);color:#fff;margin-top:-26px;box-shadow:0 6px 18px color-mix(in srgb,var(--yellow) 45%,transparent);border:4px solid var(--surface)}
+  .tabbar .plus{color:var(--ink)}
+  .tabbar .badge{position:absolute;top:2px;left:calc(50% + 8px);background:var(--yellow);color:#fff;border-radius:99px;font-size:.68rem;padding:0 6px;line-height:1.5}
+  body.onb .tabbar,body.onb .topact{display:none}
+  .toast{bottom:calc(var(--tab-h) + 14px)}
+  #rt-bill{bottom:var(--tab-h)!important}
+  .hero{padding:14px 16px;gap:12px}
+  .hero-l{flex-basis:100%;gap:12px;align-items:flex-start}
+  .hero-ico{width:44px;height:44px;border-radius:12px}
+  .hero-ico svg{width:24px;height:24px}
+  .hero h1{font-size:1.35rem}
+  .hero p{font-size:.92rem}
+  .hero .row{width:100%}
+  .hero .row .btn.primary{flex:1 1 auto;justify-content:center;min-height:50px;font-size:1rem}
+  .overlay:not(.sheet-ov){padding:0;align-items:stretch}
+  .overlay:not(.sheet-ov) .modal{width:100%;min-height:100%;border-radius:0}
+  .modal-h{position:sticky;top:0;background:var(--bg);z-index:2;padding:calc(12px + env(safe-area-inset-top,0px)) 16px 12px}
+  .modal-h .btn{width:42px;height:42px;padding:0;justify-content:center;font-size:1.1rem}
+  .modal-b{padding:16px;flex:1}
+  .modal-f{position:sticky;bottom:0;background:var(--surface);padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));box-shadow:0 -4px 16px rgba(15,23,51,.08)}
+  .modal-f .btn.primary{flex:1 1 140px;justify-content:center;min-height:50px;font-size:1rem}
+}
+@media (max-width:700px){
+  .quick.main .qa{min-height:120px;padding:14px}
+  table.rsp thead{display:none}
+  table.rsp,table.rsp tbody,table.rsp tfoot{display:block;width:100%}
+  table.rsp tr{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:4px 12px;padding:12px 4px;border-bottom:1px solid var(--line)}
+  table.rsp tr:last-child{border-bottom:0}
+  table.rsp td{border:0!important;padding:0!important;text-align:left!important;min-width:0;overflow-wrap:anywhere}
+  table.rsp td:first-child{grid-column:1/-1;font-size:1rem}
+  table.rsp td[data-th]:not(:first-child)::before{content:attr(data-th);display:block;font-size:.72rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+  table.rsp td:empty{display:none}
+  table.rsp td[colspan]{grid-column:1/-1}
+  .tablewrap{overflow:visible;margin:0}
+  .ficha dl{grid-template-columns:96px minmax(0,1fr)}
+  .newcli{grid-template-columns:minmax(0,1fr)}
+}
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
@@ -309,9 +446,10 @@ a.lnk:hover{text-decoration:underline}
 <div class="app">
   <aside class="side">
     <div class="brand">
-      <span id="brandLogo"><svg width="38" height="38" viewBox="0 0 38 38" aria-hidden="true"><rect width="38" height="38" rx="10" fill="#ffc400"/><path d="M21.5 5 9 21.5h8.2L15.5 33 29 15.8h-8.4z" fill="#111"/></svg></span>
-      <div><b id="brandName">Mi Oficina IA</b><span id="brandSub">Tu oficina</span></div>
+      <span id="brandLogo"><svg width="38" height="38" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#1f3fbf"/><path d="M20 33.5l8 8 16-18" fill="none" stroke="#fff" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="48" cy="16" r="6" fill="#ff7a2f"/></svg></span>
+      <div><b id="brandName">Oficio</b><span id="brandSub">Tu oficina en el móvil</span></div>
     </div>
+    <div class="topact"><button data-go="ajustes" aria-label="Ajustes"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 8a4 4 0 1 0 4 4 4 4 0 0 0-4-4zm8.6 5.4.1-1.4-.1-1.4 2-1.6-2-3.4-2.4.9a8 8 0 0 0-2.4-1.4L15.4 3h-4l-.4 2.5a8 8 0 0 0-2.4 1.4l-2.4-.9-2 3.4 2 1.6-.1 1.4.1 1.4-2 1.6 2 3.4 2.4-.9a8 8 0 0 0 2.4 1.4l.4 2.5h4l.4-2.5a8 8 0 0 0 2.4-1.4l2.4.9 2-3.4z"/></svg></button></div>
     <nav class="nav" id="nav"></nav>
     <div class="side-foot">
       <span class="mode" id="modeLbl"><i></i>Conectando…</span>
@@ -320,6 +458,7 @@ a.lnk:hover{text-decoration:underline}
   </aside>
   <main id="main"></main>
 </div>
+<nav class="tabbar" id="tabbar" aria-label="Menú principal"></nav>
 <div id="modalRoot"></div>
 
 <script>
@@ -365,7 +504,7 @@ const PAISES={
  PR:{n:'Puerto Rico',cur:'USD',loc:'es-PR',tax:'IVU',tid:'ID fiscal',rates:[11.5,0]},
  US:{n:'Estados Unidos',cur:'USD',loc:'es-US',tax:'Sales tax',tid:'EIN',rates:[0]}
 };
-const APPN=(window.RT&&window.RT.appName)||'Mi Oficina IA';
+const APPN=(window.RT&&window.RT.appName)||'Oficio';
 const SA=!!(window.RT&&window.RT.standalone);
 const P=()=>PAISES[A().pais]||PAISES.ES;
 const isES=()=>(A().pais||'ES')==='ES';
@@ -744,7 +883,7 @@ function viewTrabajos(){
  const ord=(a,b)=>(a.prioridad==='urgente'?0:1)-(b.prioridad==='urgente'?0:1)||String(a.fechaPrevista||'9').localeCompare(String(b.fechaPrevista||'9'))||String(a.creado).localeCompare(String(b.creado));
  const hechosSinF=by('hecho').filter(t=>!facOf(t.facturaId)),terminados=by('hecho').filter(t=>facOf(t.facturaId));
  const col=(id,title,list,empty)=>`<div class="tcol"><div class="tcol-h"><h2>${title}</h2><span class="pill">${list.length}</span></div>${list.sort(ord).map(trabajoCard).join('')||`<p class="empty">${empty}</p>`}${id==='espera'||id==='porhacer'?`<button class="btn sm ghost" data-newtrab="${id}">+ Añadir</button>`:''}</div>`;
- return head('Agente de trabajos','Trabajos y pendientes','Todo lo que tienes entre manos: lo que espera, lo que toca hacer, y los presupuestos y facturas que te faltan.',`<button class="btn primary" data-newtrab="porhacer">Nuevo trabajo</button>`)+
+ return head('','Trabajos','Lo que tienes entre manos y lo que te falta presupuestar o facturar.',`<button class="btn primary" data-newtrab="porhacer">Nuevo trabajo</button>`)+
  `<div class="kpis">
   <div class="kpi"><span class="l">En espera</span><span class="v">${by('espera').length}</span><span class="s">Material, cliente o presupuesto</span></div>
   <div class="kpi"><span class="l">Por realizar</span><span class="v">${by('porhacer').length}</span><span class="s">${by('porhacer').filter(t=>t.prioridad==='urgente').length} urgente(s)</span></div>
@@ -783,8 +922,8 @@ function trabajoForm(t={}){
 
 /* ---------- interfaz general ---------- */
 const VIEWS=[
- {id:'panel',lbl:'Panel',long:'del negocio',ico:'M3 13h8V3H3zm0 8h8v-6H3zm10 0h8V11h-8zm0-18v6h8V3z'},
- {id:'asistente',lbl:'Asistente',ico:'M12 2a7 7 0 0 0-7 7v3l-2 3v1h18v-1l-2-3V9a7 7 0 0 0-7-7zm-2 17a2 2 0 0 0 4 0z'},
+ {id:'panel',lbl:'Inicio',ico:'M3 13h8V3H3zm0 8h8v-6H3zm10 0h8V11h-8zm0-18v6h8V3z'},
+ {id:'asistente',lbl:'Asistente IA',ico:'M10 3l1.6 4.4L16 9l-4.4 1.6L10 15l-1.6-4.4L4 9l4.4-1.6zm8 9l.9 2.1L21 15l-2.1.9L18 18l-.9-2.1L15 15l2.1-.9zM6 16l.7 1.3L8 18l-1.3.7L6 20l-.7-1.3L4 18l1.3-.7z'},
  {id:'clientes',lbl:'Clientes',ico:'M16 11a4 4 0 1 0-4-4 4 4 0 0 0 4 4zM8 13a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm8 1c-2.7 0-8 1.3-8 4v2h16v-2c0-2.7-5.3-4-8-4zM8 15c-.3 0-.7 0-1.1.1A4.4 4.4 0 0 1 9 18v2H1v-2c0-2 3.5-3 7-3z'},
  {id:'agenda',lbl:'Agenda',long:'y rutas',ico:'M7 2v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2zm-2 8h14v10H5z'},
  {id:'trabajos',lbl:'Trabajos',long:'y pendientes',ico:'M9 2h6a1 1 0 0 1 1 1v1h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2V3a1 1 0 0 1 1-1zm0 2v2h6V4zm1.5 13.5 6-6-1.4-1.4-4.6 4.6-2.1-2.1-1.4 1.4z'},
@@ -805,7 +944,11 @@ function renderNav(){
  const hoy=S.citas.filter(c=>c.fecha===TODAY&&c.estado!=='hecha').length;
  $('#nav').innerHTML=VIEWS.map(v=>{let b='';if(v.id==='facturas'&&vencidas)b=`<span class="badge">${vencidas}</span>`;if(v.id==='agenda'&&hoy)b=`<span class="badge">${hoy}</span>`;const tp=v.id==='trabajos'?factPorHacer().length+presPorHacer().length:0;if(tp)b=`<span class="badge">${tp}</span>`;
   return `<button data-go="${v.id}" aria-current="${UI.view===v.id}"><span class="icobox" style="--m:var(--c-${v.id})"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="${v.ico}"/></svg></span><span>${v.lbl}${v.long?`<span class="lbl-long"> ${v.long}</span>`:''}</span>${b}</button>`}).join('');
- $('#brandName').textContent=A().nombre||APPN;$('#brandSub').textContent=A().oficio?A().oficio.charAt(0).toUpperCase()+A().oficio.slice(1):'Tu oficina';
+ const svg=id=>{const v=VIEWS.find(x=>x.id===id);return `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="${v.ico}"/></svg>`};
+ const masV=['asistente','facturas','agenda','trabajos','gastos','mensajes','ajustes'];const masB=vencidas+factPorHacer().length+presPorHacer().length;
+ const tb=(id,l)=>`<button data-go="${id}" aria-current="${UI.view===id}"><span class="ti">${svg(id)}</span>${l}</button>`;
+ $('#tabbar').innerHTML=tb('panel','Inicio')+tb('presupuestos','Presupuestos')+`<button class="plus" data-sheet="crear" aria-label="Crear algo nuevo"><span class="ti"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6z"/></svg></span>Nuevo</button>`+tb('clientes','Clientes')+`<button data-sheet="mas" aria-current="${masV.includes(UI.view)}"><span class="ti"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 4h6v6H4zm10 0h6v6h-6zM4 14h6v6H4zm10 0h6v6h-6z"/></svg></span>Más${masB?`<span class="badge">${masB}</span>`:''}</button>`;
+ $('#brandName').textContent=A().nombre||APPN;$('#brandSub').textContent=A().oficio?A().oficio.charAt(0).toUpperCase()+A().oficio.slice(1):'Tu oficina en el móvil';
  const bl=$('#brandLogo');const lg=A().logo||'';if(bl.dataset.logo!==lg){bl.dataset.logo=lg;if(lg)bl.innerHTML=`<img class="brand-logo" src="${esc(lg)}" alt="">`;else bl.innerHTML=bl.dataset.def||bl.innerHTML}if(!bl.dataset.def&&!lg)bl.dataset.def=bl.innerHTML;
  const ml=$('#modeLbl');ml.className='mode'+(MODE==='db'?' live':'');
  ml.innerHTML='<i></i>'+(MODE==='db'?'Datos guardados en tu cuenta':MODE==='local'?'Demo: datos solo en este navegador':'Conectando…');
@@ -838,7 +981,7 @@ async function runAgent(key,label,prompt,fallback,extraFn){
  paint();
  const sm=await getSample();
  if(sm){try{const r=await sm([{role:'user',content:context()+'\n\nTAREA:\n'+prompt}],{onText:u=>{o.text=u.text;const t=document.querySelector('#out-'+key+' .agent-text');if(t)t.textContent=u.text}});o.text=r.text}
-  catch(e){o.text=fallback();o.note=e&&e.code==='rate_limited'?'Claude está saturado ahora mismo; te dejo un borrador automático.':e&&e.code==='not_granted'?'No has dado permiso para que la página consulte a Claude; te dejo un borrador automático.':'Claude no ha respondido; te dejo un borrador automático.'}}
+  catch(e){o.text=fallback();o.note=e&&e.code==='rate_limited'?'La IA está saturada ahora mismo; te dejo un borrador automático.':e&&e.code==='not_granted'?'No has dado permiso para que la página consulte a la IA; te dejo un borrador automático.':'La IA no ha respondido; te dejo un borrador automático.'}}
  else{o.text=fallback();o.note='Borrador automático: en esta vista la página no puede usar la IA, así que usa una plantilla.'}
  o.extra=extraFn?extraFn(o.text):'';paint();
 }
@@ -848,6 +991,17 @@ function openModal(title,body,foot,onMount){title=loc(title);body=loc(body);foot
  $('#modalRoot').innerHTML=`<div class="overlay" id="ov"><div class="modal" role="dialog" aria-modal="true" aria-label="${esc(title)}"><div class="modal-h"><h2>${esc(title)}</h2><button class="btn sm ghost" data-close aria-label="Cerrar">✕</button></div><div class="modal-b">${body}</div>${foot?`<div class="modal-f">${foot}</div>`:''}</div></div>`;
  const ov=$('#ov');ov.addEventListener('click',e=>{if(e.target===ov||e.target.closest('[data-close]'))closeModal()});
  onMount&&onMount(ov);const f=ov.querySelector('input,select,textarea');f&&f.focus();
+}
+function openSheet(kind){
+ const it=(attr,id,t,b)=>`<button class="sb" ${attr}>${ico(id)}${t}${b?`<span class="badge">${b}</span>`:''}</button>`;
+ let title,html;
+ if(kind==='crear'){title='¿Qué quieres crear?';
+  html=`<div class="grid3">${it('data-newpres=""','presupuestos','Presupuesto')}${it('data-newfac=""','facturas','Factura')}${it('data-newcli','clientes','Cliente')}${it('data-newcita=""','agenda','Visita')}${it('data-newgasto','gastos','Gasto')}${it('data-snapgasto','gastos','Foto de ticket')}${it('data-newtrab="porhacer"','trabajos','Trabajo')}${it('data-go="asistente"','asistente','Pedírselo a la IA')}${it('data-go="mensajes"','mensajes','Mensaje')}</div>`}
+ else{title='Todo el programa';const vencidas=S.facturas.filter(f=>factState(f).k==='bad').length;const tp=factPorHacer().length+presPorHacer().length;
+  html=`<div class="grid3">${it('data-go="panel"','panel','Inicio')}${it('data-go="presupuestos"','presupuestos','Presupuestos')}${it('data-go="facturas"','facturas','Facturas',vencidas)}${it('data-go="clientes"','clientes','Clientes')}${it('data-go="agenda"','agenda','Agenda')}${it('data-go="trabajos"','trabajos','Trabajos',tp)}${it('data-go="gastos"','gastos','Gastos')}${it('data-go="asistente"','asistente','Asistente IA')}${it('data-go="mensajes"','mensajes','Mensajes')}</div>
+  <div class="sheet-foot"><button class="btn" data-go="ajustes">Ajustes y mis datos</button>${window.RT&&window.RT.user?`<button class="btn ghost" data-rtlogout>Cerrar sesión</button>`:''}</div>`}
+ $('#modalRoot').innerHTML=`<div class="overlay sheet-ov" id="ov"><div class="sheet" role="dialog" aria-modal="true" aria-label="${esc(title)}"><div class="sheet-grab"></div><h2>${esc(title)}</h2>${loc(html)}</div></div>`;
+ const ov=$('#ov');ov.addEventListener('click',e=>{if(e.target===ov||e.target.closest('button'))closeModal()});
 }
 function closeModal(){$('#modalRoot').innerHTML='';if(typeof DOC_LINK!=='undefined')DOC_LINK=null}
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#ov'))closeModal()});
@@ -890,16 +1044,21 @@ function viewPanel(){
  const abiertos=S.presupuestos.filter(p=>p.estado==='enviado'||p.estado==='borrador');
  const al=alerts();
  const next=S.citas.filter(c=>c.fecha>=TODAY&&c.estado!=='hecha').sort((a,b)=>(a.fecha+a.hora)<(b.fecha+b.hora)?-1:1).slice(0,6);
- return head('Agente de resumen','Así va el negocio','Lo que necesita tu atención hoy, cuánto has facturado y lo que viene esta semana.',`${exampleNote()}<button class="btn agent" data-agent="briefing">Resumen de la semana</button>`)+
- `<div class="quick">
-  <button class="qa" style="--m:var(--c-asistente)" data-go="asistente">${ico('asistente')}Hablar con el asistente<small>Dale órdenes o pregúntale</small></button>
-  <button class="qa" style="--m:var(--c-clientes)" data-newcli>${ico('clientes')}Nuevo cliente<small>Ficha con dirección y móvil</small></button>
-  <button class="qa" style="--m:var(--c-agenda)" data-newcita="">${ico('agenda')}Nueva visita<small>Y a tu Google Calendar</small></button>
-  <button class="qa" style="--m:var(--c-trabajos)" data-go="trabajos">${ico('trabajos')}Trabajos<small>${S.trabajos.filter(t=>t.estado==='espera').length} en espera · ${S.trabajos.filter(t=>t.estado==='porhacer').length} por hacer</small></button>
-  <button class="qa" style="--m:var(--c-presupuestos)" data-go="presupuestos">${ico('presupuestos')}Hacer presupuesto<small>Hablando con Claude</small></button>
-  <button class="qa" style="--m:var(--c-facturas)" data-newfac="">${ico('facturas')}Nueva factura<small>PDF listo para enviar</small></button>
-  <button class="qa" style="--m:var(--c-gastos)" data-snapgasto>${ico('gastos')}Foto de un ticket<small>Claude lo lee y lo apunta</small></button>
+ const hr=new Date().getHours();const saludo=hr<13?'Buenos días':hr<21?'Buenas tardes':'Buenas noches';const tit=(A().titular||'').split(' ')[0];
+ return `<div class="hello"><h1>${saludo}${tit?', '+esc(tit):''}</h1><p>${fDay(TODAY).replace(/^./,c=>c.toUpperCase())}. ¿Qué quieres hacer?</p></div>
+ <div class="quick main">
+  <button class="qa" style="--m:var(--c-presupuestos)" data-newpres="">${ico('presupuestos')}Hacer un presupuesto<small>En 1 minuto, con PDF</small></button>
+  <button class="qa" style="--m:var(--c-facturas)" data-newfac="">${ico('facturas')}Hacer una factura<small>Número e IVA automáticos</small></button>
+  <button class="qa" style="--m:var(--c-clientes)" data-newcli>${ico('clientes')}Añadir un cliente<small>Nombre, teléfono y dirección</small></button>
+  <button class="qa" style="--m:var(--c-gastos)" data-snapgasto>${ico('gastos')}Apuntar un gasto<small>Haz una foto al ticket</small></button>
  </div>
+ <div class="quick more">
+  <button class="qa" style="--m:var(--c-agenda)" data-newcita="">${ico('agenda')}Nueva visita<small></small></button>
+  <button class="qa" style="--m:var(--c-trabajos)" data-go="trabajos">${ico('trabajos')}Trabajos<small></small></button>
+  <button class="qa" style="--m:var(--c-asistente)" data-go="asistente">${ico('asistente')}Asistente IA<small></small></button>
+  <button class="qa" style="--m:var(--c-mensajes)" data-go="mensajes">${ico('mensajes')}Mensajes<small></small></button>
+ </div>
+ <div class="row" style="justify-content:space-between"><h2 class="sec-t" style="margin:0">Así va tu negocio</h2><span class="row">${exampleNote()}<button class="btn agent sm" data-agent="briefing">Resumen con IA</button></span></div>
  <div class="kpis">
   <div class="kpi" style="--m:var(--c-facturas)"><span class="l">Facturado en ${MESES[parse(TODAY).getMonth()]}</span><span class="v">${eur(fm.reduce((s,f)=>s+tot(f).base,0))}</span><span class="s">${fm.length} factura${fm.length===1?'':'s'} · sin IVA</span></div>
   <div class="kpi" style="--m:var(--c-gastos)"><span class="l">Pendiente de cobro</span><span class="v">${eur(pend.reduce((s,f)=>s+tot(f).total,0))}</span><span class="s">${venc.length?`<span class="pill bad">${venc.length} vencida${venc.length>1?'s':''}</span>`:'Nada vencido'}</span></div>
@@ -909,7 +1068,7 @@ function viewPanel(){
  ${outSlot('briefing')}
  ${monthCard()}
  <div class="two">
-  <div class="card"><h2>Pendiente de ti</h2><div class="alerts">${al.length?al.map(x=>`<div class="alert ${x.k}"><span class="bar"></span><div>${x.t}</div><div>${x.a}</div></div>`).join(''):'<p class="empty">Todo al día. No hay nada urgente.</p>'}</div></div>
+  <div class="card"><h2>Lo que tienes pendiente</h2><div class="alerts">${al.length?al.map(x=>`<div class="alert ${x.k}"><span class="bar"></span><div>${x.t}</div><div>${x.a}</div></div>`).join(''):'<p class="empty">Todo al día. No hay nada urgente.</p>'}</div></div>
   <div class="grid">
    <div class="card"><h2>Ingresos y gastos, últimos 6 meses</h2>${chart2SVG(monthlyMoney())}<p class="small muted"><span class="key ki"></span>Ingresos <span class="key kg"></span>Gastos (con fijos) · encima, lo que ganas o pierdes. Sin IVA. Pulsa un mes para verlo por semanas.</p></div>
    <div class="card"><h2>Próximas visitas</h2>${next.length?`<div class="hist">${next.map(c=>`<div><span><span class="num">${fDate(c.fecha)} ${esc(c.hora)}</span> · ${esc(cli(c.clienteId).nombre)}</span><span class="muted">${esc(cli(c.clienteId).pueblo)}</span></div>`).join('')}</div>`:'<p class="empty">No hay visitas programadas.</p>'}</div>
@@ -930,7 +1089,7 @@ function viewClientes(){
  const list=S.clientes.filter(c=>!q||[c.nombre,c.pueblo,c.contacto,c.tipo,c.notas].join(' ').toLowerCase().includes(q)).sort((a,b)=>a.nombre.localeCompare(b.nombre));
  if(UI.selCli&&!S.clientes.some(c=>c.id===UI.selCli))UI.selCli=null;
  if(!UI.selCli&&list.length&&window.innerWidth>1000)UI.selCli=list[0].id;
- return head('Agente de clientes','Clientes','Fichas con todo lo que has hecho, lo que te deben y lo que tienes pendiente con cada uno.',`<button class="btn primary" data-newcli>Nuevo cliente</button>`)+
+ return head('','Clientes','Toca un cliente para ver su ficha, llamarle o escribirle por WhatsApp.',`<button class="btn primary" data-newcli>Nuevo cliente</button>`)+
  `<div class="toolbar"><input type="search" id="cliQ" placeholder="Buscar por nombre, pueblo o nota" value="${esc(UI.q)}" style="max-width:360px"><span class="muted small">${list.length} cliente${list.length===1?'':'s'}</span></div>
  <div class="two"><div class="card" style="padding:8px 12px"><div class="tablewrap"><table><thead><tr><th>Cliente</th><th>Pueblo</th><th>Servicio</th><th class="r">Pendiente</th></tr></thead><tbody>
  ${list.map(c=>{const p=S.facturas.filter(f=>f.clienteId===c.id&&f.estado!=='cobrada').reduce((s,f)=>s+tot(f).total,0);
@@ -999,7 +1158,7 @@ function viewAgenda(){
  const wk=S.citas.filter(c=>c.fecha>=days[0]&&c.fecha<=days[6]);
  const own=new Set(S.citas.map(c=>c.gcalId).filter(Boolean));
  const man=S.citas.filter(c=>c.fecha===addDays(TODAY,1)&&c.estado!=='hecha');
- return head('Agente de agenda y rutas','Agenda','Tus visitas junto a tu Google Calendar, la ruta del día en Google Maps y el aviso por WhatsApp con un toque.',`${man.length?`<button class="btn wa" data-avisar>Avisar a los de mañana (${man.length})</button>`:''}<button class="btn agent" data-agent="semana">Organizar mi semana</button><button class="btn primary" data-newcita="">Nueva visita</button>`)+
+ return head('','Agenda','Tus visitas de la semana. Ábrelas en Google Calendar o Google Maps con un toque.',`${man.length?`<button class="btn wa" data-avisar>Avisar a los de mañana (${man.length})</button>`:''}<button class="btn agent" data-agent="semana">Organizar mi semana</button><button class="btn primary" data-newcita="">Nueva visita</button>`)+
  `<div class="toolbar"><div class="seg"><button data-wk="-7" aria-label="Semana anterior">‹</button><button data-wk="0">Esta semana</button><button data-wk="7" aria-label="Semana siguiente">›</button></div><b>${fDate(days[0])} – ${fDate(days[6])}</b><span class="muted small">${wk.length} visitas · ${r2(wk.reduce((s,c)=>s+(+c.duracion||0),0))} h</span></div>
  ${calBar()}
  ${outSlot('semana')}
@@ -1058,9 +1217,10 @@ function nextNumber(kind){const y=TODAY.slice(0,4);
   nums.push(+A().ultimaFactura||0);return (Math.max(...nums)+1)+'/'+y}
  const nums=S.presupuestos.map(d=>{const m=String(d.numero||'').match(/(\d+)$/);return m?+m[1]:0}).filter(n=>n<100000);
  nums.push(+A().ultimoPresupuesto||0);return String(Math.max(...nums)+1)}
-function linesTable(lines){return `<div class="tablewrap"><table class="lines"><thead><tr><th>Concepto</th><th class="r" style="width:90px">Cantidad</th><th class="r" style="width:100px">Precio</th><th class="r" style="width:90px">Importe</th><th style="width:34px"></th></tr></thead><tbody>
- ${lines.map((l,i)=>`<tr><td><input type="text" data-l="${i}" data-k="concepto" value="${esc(l.concepto)}" style="min-width:180px"></td><td><input type="number" step="0.01" data-l="${i}" data-k="cantidad" value="${esc(l.cantidad)}" class="num" style="text-align:right"></td><td><input type="number" step="0.01" data-l="${i}" data-k="precio" value="${esc(l.precio)}" class="num" style="text-align:right"></td><td class="r num">${eur((+l.cantidad||0)*(+l.precio||0))}</td><td><button class="btn sm ghost" data-rml="${i}" aria-label="Quitar línea">✕</button></td></tr>`).join('')||'<tr><td colspan="5" class="empty">Sin líneas. Añade servicios del catálogo o descríbelo arriba y deja que el agente las proponga.</td></tr>'}
+function linesTable(lines){if(window.innerWidth<=700)return linesCards(lines);return `<div class="tablewrap"><table class="lines"><thead><tr><th>Concepto</th><th class="r" style="width:90px">Cantidad</th><th class="r" style="width:100px">Precio</th><th class="r" style="width:90px">Importe</th><th style="width:34px"></th></tr></thead><tbody>
+ ${lines.map((l,i)=>`<tr><td><input type="text" data-l="${i}" data-k="concepto" value="${esc(l.concepto)}" style="min-width:180px"></td><td><input type="number" step="0.01" data-l="${i}" data-k="cantidad" value="${esc(l.cantidad)}" class="num" style="text-align:right"></td><td><input type="number" step="0.01" data-l="${i}" data-k="precio" value="${esc(l.precio)}" class="num" style="text-align:right"></td><td class="r num">${eur((+l.cantidad||0)*(+l.precio||0))}</td><td><button class="btn sm ghost" data-rml="${i}" aria-label="Quitar línea">✕</button></td></tr>`).join('')||'<tr><td colspan="5" class="empty">Todavía no hay nada. Añade un servicio de tu lista de precios o una línea libre.</td></tr>'}
  </tbody></table></div>`}
+function linesCards(lines){return `<div class="lines-m">${lines.map((l,i)=>`<div class="line-c"><label class="lc-con">Concepto<input type="text" data-l="${i}" data-k="concepto" value="${esc(l.concepto)}" placeholder="Qué haces o qué pones"></label><label>Cantidad<input type="number" inputmode="decimal" step="0.01" data-l="${i}" data-k="cantidad" value="${esc(l.cantidad)}" class="num"></label><label>Precio<input type="number" inputmode="decimal" step="0.01" data-l="${i}" data-k="precio" value="${esc(l.precio)}" class="num"></label><button class="btn ghost" data-rml="${i}" aria-label="Quitar línea" style="min-height:46px">✕</button><div class="lc-imp"><span class="muted small">Importe</span><span class="num" data-imp>${eur((+l.cantidad||0)*(+l.precio||0))}</span></div></div>`).join('')||'<p class="empty">Todavía no hay nada. Añade un servicio de tu lista de precios o una línea libre.</p>'}</div>`}
 function totalsHTML(d){const t=tot(d);return `<div class="totals"><span>Base imponible</span><span class="num r">${eur(t.base)}</span><span>IVA ${d.iva}%</span><span class="num">${eur(t.iva)}</span>${+d.irpf?`<span>Retención IRPF ${d.irpf}%</span><span class="num">−${eur(t.irpf)}</span>`:''}<span class="grand">Total</span><span class="num grand">${eur(t.total)}</span></div>`}
 function docEditor(kind,doc){
  const isF=kind==='f';const a=A();
@@ -1068,25 +1228,30 @@ function docEditor(kind,doc){
  if(!d.id){Object.assign(d,{numero:nextNumber(kind),fecha:TODAY,iva:+a.iva,irpf:isF?+a.irpf:0,lineas:[],estado:isF?'pendiente':'borrador'},doc||{});if(isF&&!d.vence)d.vence=addDays(d.fecha,+a.plazo||15);if(!isF)d.validez=30}
  d.lineas=d.lineas||[];
  const estados=isF?[['pendiente','Pendiente de cobro'],['cobrada','Cobrada']]:[['borrador','Borrador'],['enviado','Enviado'],['aceptado','Aceptado'],['rechazado','Rechazado']];
- openModal((d.id?(isF?'Factura ':'Presupuesto ')+d.numero:(isF?'Nueva factura':'Nuevo presupuesto')),`<div class="form">
-  <label class="f full"><span>Cliente</span><select id="de-cli">${cliOptions(d.clienteId)}</select></label>
-  ${!isF?`<label class="f full"><span>Describe el trabajo en una frase</span><textarea id="de-desc" placeholder="Ej.: cambiar el cuadro eléctrico y poner 6 enchufes nuevos en la cocina">${esc(d.descripcion)}</textarea></label><div class="full row"><button class="btn agent" id="de-gen">Proponer líneas y precios</button><span class="muted small" id="de-genmsg">El agente usa tu catálogo de precios.</span></div>`:''}
+ openModal((d.id?(isF?'Factura ':'Presupuesto ')+d.numero:(isF?'Nueva factura':'Nuevo presupuesto')),`
+ <div class="step-t"><i>1</i>¿Para quién es?</div>
+ <label class="f full"><span class="sr">Cliente</span><select id="de-cli">${S.clientes.length?'':'<option value="">Escribe abajo el cliente nuevo</option>'}${cliOptions(d.clienteId)}<option value="__new">+ Cliente nuevo…</option></select></label>
+ <div class="newcli" id="de-newcli"${S.clientes.length?' hidden':''}><input type="text" id="de-nc-nombre" placeholder="Nombre del cliente" autocomplete="off"><input type="tel" id="de-nc-tel" placeholder="Teléfono o WhatsApp (opcional)"></div>
+ ${!isF?`<div class="step-t"><i>2</i>¿Qué trabajo es?</div><label class="f full"><textarea id="de-desc" placeholder="Ej.: cambiar el cuadro eléctrico y poner 6 enchufes nuevos en la cocina">${esc(d.descripcion)}</textarea></label><div class="full row"><button class="btn agent" id="de-gen">Que la IA ponga las líneas y precios</button><span class="muted small" id="de-genmsg">La IA usa tu lista de precios.</span></div>`:''}
+ <div class="step-t"><i>${isF?2:3}</i>Conceptos y precios</div>
+ <div id="de-lines">${linesTable(d.lineas)}</div>
+ <div class="row"><select id="de-add" style="max-width:340px;flex:1 1 200px"><option value="">+ Añadir de mi lista de precios</option>${a.catalogo.map((s,i)=>`<option value="${i}">${esc(s.nombre)} (${eur(s.precio)}/${esc(s.unidad)})</option>`).join('')}</select><button class="btn" id="de-free">+ Escribir una línea</button></div>
+ <div id="de-tot">${totalsHTML(d)}</div>
+ <details class="more"><summary>Más datos (número, fecha, ${isF?'vencimiento':'validez'}, IVA…)</summary><div class="form">
   <label class="f"><span>Número</span><input type="text" id="de-num" value="${esc(d.numero)}"></label>
   <label class="f"><span>Fecha</span><input type="date" id="de-fecha" value="${esc(d.fecha)}"></label>
   ${isF?`<label class="f"><span>Vence</span><input type="date" id="de-vence" value="${esc(d.vence)}"></label>`:`<label class="f"><span>Validez (días)</span><input type="number" id="de-val" value="${esc(d.validez||30)}"></label>`}
   <label class="f"><span>Estado</span><select id="de-est">${estados.map(([v,t])=>`<option value="${v}"${d.estado===v?' selected':''}>${t}</option>`).join('')}</select></label>
   <label class="f"><span>IVA %</span><input type="number" id="de-iva" value="${esc(d.iva)}"></label>
   ${isF?`<label class="f"><span>Retención IRPF % (solo si facturas a empresas como profesional)</span><input type="number" id="de-irpf" value="${esc(d.irpf||0)}"></label>`:''}
- </div>
- <div id="de-lines">${linesTable(d.lineas)}</div>
- <div class="row"><select id="de-add" style="max-width:320px"><option value="">+ Añadir servicio del catálogo</option>${a.catalogo.map((s,i)=>`<option value="${i}">${esc(s.nombre)} (${eur(s.precio)}/${esc(s.unidad)})</option>`).join('')}</select><button class="btn sm" id="de-free">+ Línea libre</button></div>
- <div id="de-tot">${totalsHTML(d)}</div>`,
+ </div></details>`,
  `${d.id?`<button class="btn danger ghost" id="de-del" style="margin-right:auto">Borrar</button>`:''}${d.id?`<button class="btn" id="de-view">${isF?'Ver factura':'Ver y copiar'}</button>`:''}${!isF&&d.id&&d.estado!=='rechazado'?`<button class="btn" id="de-tof">Convertir en factura</button>`:''}<button class="btn" data-close>Cancelar</button><button class="btn primary" id="de-save">Guardar</button>`,ov=>{
+  $('#de-cli',ov).onchange=e=>{const nw=e.target.value==='__new'||!e.target.value;$('#de-newcli',ov).hidden=!nw;if(nw)$('#de-nc-nombre',ov).focus()};
   const read=()=>{d.clienteId=$('#de-cli',ov).value;d.numero=$('#de-num',ov).value.trim();d.fecha=$('#de-fecha',ov).value;d.estado=$('#de-est',ov).value;d.iva=+$('#de-iva',ov).value||0;
    if(isF){d.vence=$('#de-vence',ov).value;d.irpf=+$('#de-irpf',ov).value||0}else{d.validez=+$('#de-val',ov).value||30;d.descripcion=$('#de-desc',ov).value.trim()}};
   const redraw=()=>{$('#de-lines',ov).innerHTML=linesTable(d.lineas);$('#de-tot',ov).innerHTML=totalsHTML(d)};
   ov.addEventListener('input',e=>{const t=e.target;if(t.dataset.l!=null){const l=d.lineas[+t.dataset.l];l[t.dataset.k]=t.dataset.k==='concepto'?t.value:(+t.value||0);
-    const cell=t.closest('tr').children[3];cell.textContent=eur((+l.cantidad||0)*(+l.precio||0));read();$('#de-tot',ov).innerHTML=totalsHTML(d)}
+    const cell=t.closest('tr')?t.closest('tr').children[3]:t.closest('.line-c').querySelector('[data-imp]');cell.textContent=eur((+l.cantidad||0)*(+l.precio||0));read();$('#de-tot',ov).innerHTML=totalsHTML(d)}
    else if(['de-iva','de-irpf'].includes(t.id)){read();$('#de-tot',ov).innerHTML=totalsHTML(d)}});
   ov.addEventListener('click',e=>{const b=e.target.closest('[data-rml]');if(b){d.lineas.splice(+b.dataset.rml,1);read();redraw()}});
   $('#de-add',ov).onchange=e=>{const s=a.catalogo[+e.target.value];if(s){d.lineas.push({concepto:s.nombre,cantidad:1,precio:s.precio});read();redraw()}e.target.value=''};
@@ -1094,7 +1259,8 @@ function docEditor(kind,doc){
   const gen=$('#de-gen',ov);if(gen)gen.onclick=async()=>{read();if(!d.descripcion){toast('Describe primero el trabajo');return}
    gen.disabled=true;const msg=$('#de-genmsg',ov);msg.textContent='Calculando…';
    const lines=await proposeLines(d.descripcion,cli(d.clienteId));d.lineas=lines.lineas;msg.textContent=lines.nota||'Revisa cantidades y precios antes de enviarlo.';gen.disabled=false;redraw()};
-  const save=async()=>{read();if(!d.clienteId){toast('Primero añade un cliente');return false}if(!d.id)d.id=uid(isF?'f':'p');
+  const save=async()=>{read();if(!d.clienteId||d.clienteId==='__new'){const nm=$('#de-nc-nombre',ov).value.trim();if(!nm){toast('Escribe el nombre del cliente');$('#de-newcli',ov).hidden=false;$('#de-nc-nombre',ov).focus();return false}
+    const nc={id:uid('c'),nombre:nm,telefono:$('#de-nc-tel',ov).value.trim(),pueblo:'',contacto:'',tipo:'Particular',frecuencia:'Puntual',notas:''};await put('clientes',nc);d.clienteId=nc.id;const sel=$('#de-cli',ov);sel.insertAdjacentHTML('afterbegin',`<option value="${nc.id}">${esc(nm)}</option>`);sel.value=nc.id;$('#de-newcli',ov).hidden=true}if(!d.id)d.id=uid(isF?'f':'p');
    if(isF&&d.estado==='cobrada'&&!d.cobradaEl)d.cobradaEl=TODAY;await put(isF?'facturas':'presupuestos',d);await linkDoc(isF,d);return true};
   $('#de-save',ov).onclick=async()=>{if(await save()){closeModal();toast(isF?'Factura guardada':'Presupuesto guardado')}};
   const v=$('#de-view',ov);if(v)v.onclick=async()=>{if(await save())isF?invoiceView(d):presupuestoText(d)};
@@ -1156,7 +1322,7 @@ function makePDF(kind,d,cl){
  if(!window.jspdf||!window.jspdf.jsPDF)throw new Error('No se pudo cargar el generador de PDF');
  const isF=kind==='f',a=A(),t=tot(d);cl=cl||cli(d.clienteId);
  const doc=new window.jspdf.jsPDF({unit:'mm',format:'a4'});{const _t=doc.text.bind(doc);doc.text=(t,...r)=>_t(Array.isArray(t)?t.map(loc):loc(t),...r)}const W=210,M=16;let y=18;
- const pine=[17,17,17],yel=[255,196,0],grey=[110,110,110];
+ const pine=[31,63,191],yel=[255,122,47],grey=[110,110,110];
  const e2=n=>eur(n).replace(/[\u00a0\u202f]/g,' ');
  let lx=M;if(a.logo){try{const pr=doc.getImageProperties(a.logo);const h=16,w=Math.min(40,h*pr.width/pr.height);doc.addImage(a.logo,a.logo.startsWith('data:image/jpeg')?'JPEG':'PNG',M,y-7,w,h);lx=M+w+4}catch(e){}}
  doc.setFillColor(...yel);doc.rect(0,0,W,4,'F');
@@ -1282,7 +1448,7 @@ async function saveDraft(){const c=UI.chat,dr=c&&c.draft;if(!dr)return null;
 function chatHTML(){
  if(!UI.chat)newChat();const c=UI.chat;const recent=S.chats.filter(x=>x.kind!=='asistente').slice().sort((a,b)=>(b.updated||0)-(a.updated||0)).slice(0,8);
  const ideas=['Cambio de cuadro eléctrico en un piso de 80 m²','Instalar 6 puntos de luz y 4 enchufes en una cocina','Punto de recarga para coche eléctrico en garaje','Boletín para dar de alta la luz en una casa antigua'];
- return `<div class="card chatcard"><div class="chat-top"><div><h2>Habla con Claude para hacer un presupuesto</h2><p class="muted small">Cuéntale el trabajo como se lo dirías a un compañero. Te pregunta lo que falte, te prepara el presupuesto y lo descargas en PDF o lo envías.</p></div>
+ return `<div class="card chatcard"><div class="chat-top"><div><h2>O pídeselo a la IA</h2><p class="muted small">Cuéntale el trabajo como se lo dirías a un compañero. Te pregunta lo que falte, te prepara el presupuesto y lo descargas en PDF o lo envías.</p></div>
   <div class="row">${recent.length?`<select id="chat-pick" aria-label="Conversaciones anteriores" style="max-width:240px"><option value="">Conversaciones anteriores…</option>${recent.map(x=>`<option value="${x.id}"${x.id===c.id?' selected':''}>${esc(x.titulo)} · ${fDate(x.fecha)}</option>`).join('')}</select>`:''}<button class="btn sm" data-chatnew>Nueva conversación</button></div></div>
  <div class="chat-log" id="chat-log">${c.msgs.length?'':`<div class="msg sys">Por ejemplo:</div><div class="chips">${ideas.map(i=>`<button class="chip" data-chatidea="${esc(i)}">${esc(i)}</button>`).join('')}</div>`}
   ${c.msgs.map(m=>`<div class="msg ${m.role==='user'?'u':'a'}">${esc(m.content)}</div>`).join('')}
@@ -1400,7 +1566,7 @@ function asisLogHTML(){const c=UI.asis;return c.msgs.map(m=>m.role==='action'?ac
 function paintAsis(){const l=document.getElementById('asis-log');if(!l)return;const p=document.getElementById('asis-pending');const txt=p?p.textContent:'';l.innerHTML=asisLogHTML();const np=document.getElementById('asis-pending');if(np&&txt)np.textContent=txt;scrollAsis()}
 function viewAsistente(){if(!UI.asis)newAsis();const c=UI.asis;const recent=S.chats.filter(x=>x.kind==='asistente').sort((a,b)=>(b.updated||0)-(a.updated||0)).slice(0,8);
  const ideas=['Agrega a Juan Pérez como cliente, su móvil es 611 222 333','Agéndame mañana a las 10 una revisión en casa de Pilar Gómez','Hazle un presupuesto a Elena Rubio para desbrozar 1.200 m²','¿Quién me debe dinero?','Apunta 60 € de gasoil de hoy'];
- return head('Asistente','Dile lo que necesitas','Escribe o dicta órdenes como se las darías a un ayudante. Da de alta clientes, agenda visitas (también en tu Google Calendar), hace presupuestos y facturas, marca cobros y apunta gastos.',`${recent.length?`<select id="asis-pick" aria-label="Conversaciones anteriores" style="max-width:220px"><option value="">Anteriores…</option>${recent.map(x=>`<option value="${x.id}"${x.id===c.id?' selected':''}>${esc(x.titulo)} · ${fDate(x.fecha)}</option>`).join('')}</select>`:''}<button class="btn" data-asisnew>Nueva conversación</button>`)+
+ return head('','Asistente IA','Escribe o pulsa el micrófono y dile lo que necesitas, como a un ayudante.',`${recent.length?`<select id="asis-pick" aria-label="Conversaciones anteriores" style="max-width:220px"><option value="">Anteriores…</option>${recent.map(x=>`<option value="${x.id}"${x.id===c.id?' selected':''}>${esc(x.titulo)} · ${fDate(x.fecha)}</option>`).join('')}</select>`:''}<button class="btn" data-asisnew>Nueva conversación</button>`)+
  `<div class="card chatcard"><div class="chat-log" id="asis-log" style="max-height:62vh">${c.msgs.length?'':`<div class="msg sys">Prueba con algo así:</div><div class="chips">${ideas.map(i=>`<button class="chip" data-asisidea="${esc(i)}">${esc(i)}</button>`).join('')}</div>`}${asisLogHTML()}</div>
  <form class="chat-in" id="asis-form"><textarea id="asis-text" placeholder="Ej.: apunta un trabajo en espera para Luis, cambiar el cuadro, falta material" ${c.busy?'disabled':''}>${esc(UI.asisInput||'')}</textarea><button class="btn primary" ${c.busy?'disabled':''}>Enviar</button></form>
  <p class="small muted">En el móvil puedes dictar con el micrófono del teclado. Nada se envía a tus clientes sin que tú pulses el botón.</p></div>`}
@@ -1415,11 +1581,11 @@ function viewPresupuestos(){
  const ord={borrador:0,enviado:1,aceptado:2,rechazado:3};const list=S.presupuestos.slice().sort((a,b)=>ord[a.estado]-ord[b.estado]||(a.fecha<b.fecha?1:-1));
  const kind={borrador:'',enviado:'info',aceptado:'ok',rechazado:'bad'};
  const enviados=S.presupuestos.filter(p=>p.estado!=='borrador');const acept=enviados.filter(p=>p.estado==='aceptado');
- return head('Agente de presupuestos','Presupuestos','Hazlos hablando con Claude o rellénalos a mano. Descárgalos en PDF, envíalos por WhatsApp o Gmail y conviértelos en factura sin volver a escribir nada.',`<button class="btn primary" data-newpres="">Nuevo presupuesto a mano</button>`)+chatHTML()+
+ return head('','Presupuestos','Crea uno, descárgalo en PDF y envíalo por WhatsApp o email. Cuando el cliente acepte, conviértelo en factura con un toque.',`<button class="btn primary" data-newpres="">+ Nuevo presupuesto</button>`)+
  `<div class="kpis"><div class="kpi"><span class="l">En borrador</span><span class="v">${S.presupuestos.filter(p=>p.estado==='borrador').length}</span></div><div class="kpi"><span class="l">Esperando respuesta</span><span class="v">${S.presupuestos.filter(p=>p.estado==='enviado').length}</span><span class="s">${eur(S.presupuestos.filter(p=>p.estado==='enviado').reduce((s,p)=>s+tot(p).total,0))}</span></div><div class="kpi"><span class="l">Aceptados</span><span class="v">${acept.length}</span><span class="s">${eur(acept.reduce((s,p)=>s+tot(p).total,0))}</span></div><div class="kpi"><span class="l">Tasa de aceptación</span><span class="v">${enviados.length?Math.round(acept.length/enviados.length*100):0}%</span><span class="s">de los enviados</span></div></div>
- <div class="card" style="padding:8px 12px"><div class="tablewrap"><table><thead><tr><th>Número</th><th>Cliente</th><th>Trabajo</th><th>Fecha</th><th>Estado</th><th class="r">Total</th></tr></thead><tbody>
+ <h2 class="sec-t">Tus presupuestos</h2><div class="card" style="padding:8px 12px">${list.length?'':'<p class="empty" style="padding:12px 6px">Aún no tienes presupuestos. Pulsa «+ Nuevo presupuesto» o pídeselo a la IA aquí abajo.</p>'}<div class="tablewrap"><table><thead><tr><th>Número</th><th>Cliente</th><th>Trabajo</th><th>Fecha</th><th>Estado</th><th class="r">Total</th></tr></thead><tbody>
  ${list.map(p=>`<tr class="click" data-editp="${p.id}"><td class="num">${esc(p.numero)}</td><td><b>${esc(cli(p.clienteId).nombre)}</b></td><td class="small">${esc(p.descripcion||'—')}</td><td class="num">${fDate(p.fecha)}</td><td><span class="pill ${kind[p.estado]}">${esc(p.estado)}</span>${p.estado==='enviado'&&diffDays(TODAY,p.fecha)>=7?' <span class="pill warn">sin respuesta</span>':''}</td><td class="r num">${eur(tot(p).total)}</td></tr>`).join('')||'<tr><td colspan="6" class="empty">Aún no hay presupuestos. Pulsa «Nuevo presupuesto».</td></tr>'}
- </tbody></table></div></div>`;
+ </tbody></table></div></div>`+chatHTML();
 }
 
 /* ======================= FACTURAS ======================= */
@@ -1429,7 +1595,7 @@ function viewFacturas(){
  const pend=S.facturas.filter(f=>f.estado!=='cobrada'),venc=pend.filter(f=>factState(f).k==='bad');
  const paid=S.facturas.filter(f=>f.estado==='cobrada'&&f.cobradaEl);const avg=paid.length?Math.round(paid.reduce((s,f)=>s+diffDays(f.cobradaEl,f.fecha),0)/paid.length):0;
  const y=TODAY.slice(0,4);const year=S.facturas.filter(f=>f.fecha.startsWith(y));
- return head('Agente de facturas y cobros','Facturas y cobros','Numeración correlativa, IVA calculado, quién te debe y un recordatorio redactado para cada impago.',`<button class="btn agent" data-agent="cobros">Plan de cobros</button><button class="btn primary" data-newfac="">Nueva factura</button>`)+
+ return head('','Facturas','Quién te ha pagado y quién te debe. El número y el IVA se ponen solos.',`<button class="btn agent" data-agent="cobros">Plan de cobros</button><button class="btn primary" data-newfac="">Nueva factura</button>`)+
  `<div class="kpis"><div class="kpi"><span class="l">Pendiente de cobro</span><span class="v">${eur(pend.reduce((s,f)=>s+tot(f).total,0))}</span><span class="s">${pend.length} facturas</span></div><div class="kpi"><span class="l">Vencido</span><span class="v" style="color:${venc.length?'var(--bad)':'inherit'}">${eur(venc.reduce((s,f)=>s+tot(f).total,0))}</span><span class="s">${venc.length} facturas</span></div><div class="kpi"><span class="l">Te pagan de media en</span><span class="v">${avg} días</span><span class="s">desde la fecha de factura</span></div><div class="kpi"><span class="l">Facturado ${y}</span><span class="v">${eur(year.reduce((s,f)=>s+tot(f).base,0))}</span><span class="s">sin IVA · ${year.length} facturas</span></div></div>
  ${outSlot('cobros')}
  <div class="toolbar"><div class="seg">${[['pendientes','Pendientes'],['vencidas','Vencidas'],['cobradas','Cobradas'],['todas','Todas']].map(([k,t])=>`<button data-ff="${k}" aria-pressed="${flt===k}">${t}</button>`).join('')}</div></div>
@@ -1447,7 +1613,7 @@ function viewGastos(){
  const cur=quarterOf(TODAY);if(!UI.quarter)UI.quarter=`${cur.y}-${cur.q}`;const [qy,qq]=UI.quarter.split('-').map(Number);const r=quarterSummary(qy,qq);
  const opts=[];for(let i=0;i<4;i++){let y=cur.y,q=cur.q-i;while(q<1){q+=4;y--}opts.push(`${y}-${q}`)}
  const left=diffDays(r.deadline,TODAY);
- return head('Agente de gastos e impuestos','Gastos e impuestos',isES()?'Apunta tus gastos y mira cuánto IVA e IRPF te toca adelantar cada trimestre antes de hablar con tu gestoría.':'Apunta tus gastos y mira cuánto impuesto cobras y pagas cada trimestre antes de hablar con tu contador.',`<button class="btn" data-xlsx>Descargar Excel</button><button class="btn" data-newgasto>Apuntar a mano</button><button class="btn primary" data-snapgasto style="background:var(--c-gastos);border-color:var(--c-gastos);color:#fff">Foto del ticket o factura</button>`)+
+ return head('','Gastos e impuestos',isES()?'Apunta tus gastos y mira cuánto IVA e IRPF te toca adelantar cada trimestre antes de hablar con tu gestoría.':'Apunta tus gastos y mira cuánto impuesto cobras y pagas cada trimestre antes de hablar con tu contador.',`<button class="btn" data-xlsx>Descargar Excel</button><button class="btn" data-newgasto>Apuntar a mano</button><button class="btn primary" data-snapgasto style="background:var(--c-gastos);border-color:var(--c-gastos);color:#fff">Foto del ticket o factura</button>`)+
  `<div class="toolbar"><div class="seg">${opts.map(o=>{const[y,q]=o.split('-');return `<button data-q="${o}" aria-pressed="${UI.quarter===o}">${q}T ${y}</button>`}).join('')}</div><span class="muted small">Del ${fDate(r.s)} al ${fDate(r.e)} · presentar hasta el ${fDateL(r.deadline)}${left>=0&&r.e<TODAY?` <span class="pill ${left<=7?'bad':'warn'}">quedan ${left} días</span>`:''}</span></div>
  <div class="two"><div class="card"><h2>Resumen del ${qq}T ${qy}</h2>
   <div class="tablewrap"><table><tbody>
@@ -1480,7 +1646,7 @@ async function readReceipt(blob){const sm=await getSample();if(!sm)throw new Err
 "factura" solo si es una factura completa (con NIF del proveedor y datos del comprador); un ticket de caja o factura simplificada es "ticket". Gasolina y talleres son "Vehículo"; cuota de autónomos, "Cuotas". Si hay varios tipos de IVA, usa el principal y pon la base total. Si no se lee un dato, déjalo vacío.`}],{images:[blob],modelTier:'default'})}
 function gastoForm(g={},snap){
  let photo=null;
- openModal(g.id?(g.fijoId?'Gasto fijo de este mes':'Editar gasto'):'Nuevo gasto',`<div class="snap" id="gf-snap">${g.assetId?`<img src="${esc(assetUrl(g.assetId))}" alt="Foto del justificante">`:''}<div class="grid" style="gap:6px;flex:1;min-width:200px"><label class="btn big" for="gf-photo">${g.assetId?'Cambiar foto':'Hacer foto o subir imagen'}</label><input type="file" id="gf-photo" accept="image/*" capture="environment" hidden><span class="small muted" id="gf-snapmsg">Claude lee el ticket o la factura y rellena los datos. Tú solo revisas y guardas.</span>${g.assetId?`<button class="btn sm ghost" data-viewasset="${esc(g.assetId)}" style="justify-self:start">Ver foto guardada</button>`:''}</div></div>
+ openModal(g.id?(g.fijoId?'Gasto fijo de este mes':'Editar gasto'):'Nuevo gasto',`<div class="snap" id="gf-snap">${g.assetId?`<img src="${esc(assetUrl(g.assetId))}" alt="Foto del justificante">`:''}<div class="grid" style="gap:6px;flex:1;min-width:200px"><label class="btn big" for="gf-photo">${g.assetId?'Cambiar foto':'Hacer foto o subir imagen'}</label><input type="file" id="gf-photo" accept="image/*" capture="environment" hidden><span class="small muted" id="gf-snapmsg">La IA lee el ticket o la factura y rellena los datos. Tú solo revisas y guardas.</span>${g.assetId?`<button class="btn sm ghost" data-viewasset="${esc(g.assetId)}" style="justify-self:start">Ver foto guardada</button>`:''}</div></div>
  <form class="form" id="gf-form">
   <label class="f"><span>Fecha</span><input type="date" id="gf-fecha" value="${esc(g.fecha||TODAY)}"></label>
   <label class="f"><span>Documento</span><select id="gf-doc"><option value="factura"${g.tipoDoc!=='ticket'?' selected':''}>Factura a mi nombre (desgravo el IVA)</option><option value="ticket"${g.tipoDoc==='ticket'?' selected':''}>Ticket o factura simplificada</option></select></label>
@@ -1560,7 +1726,7 @@ async function exportCSV(){const [y,q]=UI.quarter.split('-').map(Number);const r
 const MOTIVOS=['Recordatorio de visita','Recordatorio de cobro','Enviar presupuesto','Seguimiento de presupuesto','Ofrecer revisión eléctrica','Aviso de cambio de cita','Felicitar y pedir reseña','Mensaje libre'];
 function viewMensajes(){
  const m=UI.msg||{};if(!m.clienteId&&S.clientes[0])m.clienteId=S.clientes[0].id;if(!m.motivo)m.motivo=MOTIVOS[0];if(!m.canal)m.canal='WhatsApp';UI.msg=m;
- return head('Agente de comunicaciones','Mensajes','Elige cliente y motivo: el agente redacta el WhatsApp o el email con los datos reales (fechas, importes, facturas). Tú lo revisas y lo envías.','')+
+ return head('','Mensajes','Elige cliente y motivo y te escribimos el WhatsApp o el email. Tú lo revisas y lo envías.','')+
  `<div class="two"><div class="card"><div class="form">
   <label class="f full"><span>Cliente</span><select id="mg-cli">${cliOptions(m.clienteId)}</select></label>
   <label class="f"><span>Motivo</span><select id="mg-mot">${MOTIVOS.map(x=>`<option${x===m.motivo?' selected':''}>${x}</option>`).join('')}</select></label>
@@ -1592,7 +1758,7 @@ function waLink(tel,text){const t=String(tel||'').replace(/\D/g,'');if(t.length<
 
 /* ======================= AJUSTES ======================= */
 function viewAjustes(){const a=A();
- return head('Configuración','Ajustes','Tus datos salen en facturas y mensajes. El catálogo es la lista de precios que usan los agentes.','')+
+ return head('','Ajustes','Tus datos salen en los presupuestos y facturas. El catálogo es tu lista de precios.','')+
  `<div class="two"><div class="card"><h2>Tu negocio</h2><div class="form">
   <label class="f full"><span>Nombre comercial</span><input type="text" id="aj-nombre" value="${esc(a.nombre)}"></label>
   <div class="full row" style="gap:14px;align-items:center"><div class="logo-prev" id="aj-logoprev">${a.logo?`<img src="${esc(a.logo)}" alt="Tu logo">`:'<span class="small muted">Sin logo</span>'}</div>
@@ -1670,13 +1836,16 @@ function bindOnboarding(){const f=document.getElementById('onb-form');if(!f||f.d
   await put('ajustes',aj);ONB_BUSY=false;UI.view=aj.catalogo.length?'asistente':'panel';toast(aj.catalogo.length?'Oficina lista: '+aj.catalogo.length+' servicios en tu catálogo':'Oficina lista. Añade tus precios en Ajustes');render()}}
 
 /* ======================= render y eventos ======================= */
+function rspTables(root){$$('table:not(.wk):not(.lines)',root).forEach(t=>{const th=$$('thead th',t).map(x=>x.textContent.trim());if(!th.length)return;t.classList.add('rsp');$$('tbody tr',t).forEach(tr=>[...tr.children].forEach((td,i)=>{if(th[i])td.dataset.th=th[i]}))})}
 function render(){
  renderNav();
  const m=$('#main');
  if(MODE==='connecting'){m.innerHTML='<p class="muted">Cargando tus datos…</p>';return}
  const v={asistente:viewAsistente,trabajos:viewTrabajos,panel:viewPanel,clientes:viewClientes,agenda:viewAgenda,presupuestos:viewPresupuestos,facturas:viewFacturas,gastos:viewGastos,mensajes:viewMensajes,ajustes:viewAjustes}[UI.view]||viewPanel;
  m.style.setProperty('--m','var(--c-'+UI.view+')');
- m.innerHTML=(typeof needsOnboarding==='function'&&needsOnboarding())?viewOnboarding():loc(v());
+ const onb=typeof needsOnboarding==='function'&&needsOnboarding();document.body.classList.toggle('onb',!!onb);
+ m.innerHTML=onb?viewOnboarding():loc(v());
+ rspTables(m);
  if(typeof needsOnboarding==='function'&&needsOnboarding()){bindOnboarding();return}
  syncFijos();
  if(UI.view==='ajustes')bindAjustes();
@@ -1695,6 +1864,7 @@ function render(){
 document.addEventListener('click',e=>{
  const mb=e.target.closest('[data-pmonthto]');if(mb){UI.pmonth=mb.dataset.pmonthto===TODAY.slice(0,7)?null:mb.dataset.pmonthto;UI.openWeek=null;render();$('.card.month').scrollIntoView({behavior:'smooth',block:'start'});return}
  const t=e.target.closest('button,a,tr');if(!t)return;const d=t.dataset;
+ if(d.sheet){openSheet(d.sheet);return}
  if(d.go){go(d.go,d.quarter?{quarter:d.quarter}:{});return}
  if(d.selcli){UI.selCli=d.selcli;render();if(window.innerWidth<=1000)$('#ficha').scrollIntoView({behavior:'smooth'});return}
  if(d.newcli!=null){cliForm();return}
@@ -1719,7 +1889,7 @@ document.addEventListener('click',e=>{
  if(d.chatpdf!=null||d.chatgmail!=null){const isPdf=d.chatpdf!=null;saveDraft().then(r=>{if(!r)return;render();isPdf?downloadPDF('p',r.p,r.cl):gmailDraft('p',r.p,r.cl)});return}
  if(d.chatwa!=null){const w=null;saveDraft().then(r=>{if(!r)return;const u=waUrl(r.cl.telefono,waDocText('p',r.p,r.cl));
    if(r.p.estado==='borrador')put('presupuestos',{...r.p,estado:'enviado'});
-   if(!u){if(w)w.close();toast('Este cliente no tiene móvil. Añádelo en su ficha o dile el número a Claude.');return}
+   if(!u){if(w)w.close();toast('Este cliente no tiene móvil. Añádelo en su ficha o dile el número al asistente.');return}
    if(w){w.location.href=u}else{openModal('Enviar por WhatsApp',`<p>Pulsa para abrir WhatsApp con el mensaje escrito. Recuerda adjuntar el PDF que has descargado.</p>`,`<a class="btn wa" href="${esc(u)}" target="_blank" rel="noopener">Abrir WhatsApp</a>`)}render()});return}
  if(d.gcalon!=null||d.gcaloff!=null){const on=d.gcalon!=null;const cur=S.ajustes.find(a=>a.id==='negocio')||{};const nw={...AJUSTES_DEF,...cur,id:'negocio',gcal:on};
   const i=S.ajustes.findIndex(a=>a.id==='negocio');if(i>=0)S.ajustes[i]=nw;else S.ajustes.push(nw);
