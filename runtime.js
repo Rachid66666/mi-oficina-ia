@@ -275,6 +275,51 @@
     }
   });
 
+
+  /* ---------------- hablarle a la IA (micrófono) ---------------- */
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (SR) {
+    const st = document.createElement('style');
+    st.textContent = `.rt-mic{flex:none;width:44px;height:44px;border-radius:50%;border:1px solid var(--line,#ccc);background:var(--card,#fff);color:inherit;display:grid;place-items:center;cursor:pointer}
+    .rt-mic svg{width:20px;height:20px}.rt-mic.on{background:#b3261e;border-color:#b3261e;color:#fff;animation:rtpulse 1.2s infinite}
+    @keyframes rtpulse{50%{box-shadow:0 0 0 8px rgba(179,38,30,.15)}}`;
+    (document.head || document.documentElement).appendChild(st);
+    const icon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>';
+    let rec = null;
+    const addMics = () => document.querySelectorAll('form.chat-in').forEach(f => {
+      if (f.querySelector('.rt-mic')) return;
+      const ta = f.querySelector('textarea'); if (!ta) return;
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'rt-mic'; b.innerHTML = icon; b.title = 'Habla y se envía solo'; b.setAttribute('aria-label', 'Hablar');
+      b.onclick = () => {
+        if (rec) { rec.stop(); return; }
+        rec = new SR();
+        rec.lang = /^es/i.test(navigator.language || '') ? navigator.language : 'es-ES';
+        rec.interimResults = true; rec.continuous = false;
+        const base = ta.value ? ta.value.replace(/\s*$/, ' ') : '';
+        let finalText = '';
+        rec.onresult = ev => {
+          let interim = '';
+          for (let i = ev.resultIndex; i < ev.results.length; i++) {
+            const t = ev.results[i][0].transcript;
+            if (ev.results[i].isFinal) finalText += t; else interim += t;
+          }
+          ta.value = base + finalText + interim; ta.dispatchEvent(new Event('input', { bubbles: true }));
+        };
+        rec.onerror = ev => { if (ev.error === 'not-allowed') alert('Da permiso al micrófono en tu navegador para poder hablarle.'); };
+        rec.onend = () => {
+          b.classList.remove('on'); rec = null;
+          if (finalText.trim()) { if (f.requestSubmit) f.requestSubmit(); else f.dispatchEvent(new Event('submit', { cancelable: true })); }
+        };
+        b.classList.add('on'); rec.start();
+      };
+      const send = f.querySelector('button[type="submit"], button.primary');
+      f.insertBefore(b, send || null);
+    });
+    const start = () => { addMics(); new MutationObserver(addMics).observe(document.body, { childList: true, subtree: true }); };
+    if (document.body) start(); else document.addEventListener('DOMContentLoaded', start);
+  }
+
   /* ---------------- lo que pide el programa ---------------- */
   RT.use = async name => {
     if (!live) {
