@@ -1,6 +1,6 @@
 {
-  "name": "Oficio",
-  "short_name": "Oficio",
+  "name": "Mi Oficina",
+  "short_name": "Mi Oficina",
   "description": "Presupuestos, facturas, clientes y agenda con IA para autónomos y pequeñas empresas.",
   "start_url": "./",
   "display": "standalone",

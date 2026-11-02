@@ -1,4 +1,4 @@
-/* Runtime de Oficio.
+/* Runtime de Mi Oficina.
    Da al programa (index.html) lo que necesita fuera de Claude: cuentas de usuario, base de datos
    por cliente, IA, descargas y fotos. Todo va contra Supabase; la IA pasa por la función "ai",
    que guarda la clave de Anthropic en el servidor (nunca llega al navegador).
@@ -7,7 +7,7 @@
   const cfg = window.APP_CONFIG || {};
   const live = !!(cfg.supabaseUrl && cfg.supabaseAnonKey && window.supabase);
   const sb = live ? window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey) : null;
-  const RT = { appName: cfg.appName || 'Oficio', standalone: true, live, user: null };
+  const RT = { appName: cfg.appName || 'Mi Oficina', standalone: true, live, user: null };
   window.RT = RT;
   document.title = RT.appName;
 
@@ -57,7 +57,7 @@
       newpass: ['Nueva contraseña', 'Escribe tu nueva contraseña.', 'Guardar contraseña']
     }[mode];
     const logo = '<svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#1f3fbf"/><path d="M20 33.5l8 8 16-18" fill="none" stroke="#fff" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="48" cy="16" r="6" fill="#ff7a2f"/></svg>';
-    el.innerHTML = `<div class="top"><div class="lg">${logo}${esc(RT.appName)}</div><p class="tag">Presupuestos, facturas, clientes y agenda desde el móvil. Fácil, aunque no sepas de ordenadores.</p></div>
+    el.innerHTML = `<div class="top"><div class="lg">${logo}${esc(RT.appName)}</div><p class="tag"><b>Tú trabaja, del papeleo nos encargamos.</b><br>Presupuestos, facturas, clientes y agenda desde el móvil, en un minuto.</p></div>
       <form class="bx" id="rt-f"><h1>${t[0]}</h1><p class="sub">${t[1]}</p>
       ${mode !== 'newpass' ? '<label for="rt-em">Tu email</label><input id="rt-em" type="email" inputmode="email" autocomplete="email" placeholder="nombre@ejemplo.com" required>' : ''}
       ${mode !== 'reset' ? `<label for="rt-pw">${mode === 'login' ? 'Tu contraseña' : 'Elige una contraseña (mínimo 6 letras o números)'}</label><input id="rt-pw" type="password" minlength="6" autocomplete="${mode === 'login' ? 'current-password' : 'new-password'}" required>` : ''}

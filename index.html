@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Oficio">
+<meta name="apple-mobile-web-app-title" content="Mi Oficina">
 <meta name="theme-color" content="#1f3fbf">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
-<title>Oficio</title>
+<title>Mi Oficina</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -303,7 +303,7 @@ a.lnk:hover{text-decoration:underline}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 
-/* ===== Oficio: marca y móvil ===== */
+/* ===== Mi Oficina: marca y móvil ===== */
 body{font-size:16px}
 .side{background:var(--surface);color:var(--ink);border-right:1px solid var(--line)}
 :root[data-theme="dark"] .side{background:var(--surface);color:var(--ink)}
@@ -447,13 +447,14 @@ details.more>.form{padding:0 14px 14px}
   <aside class="side">
     <div class="brand">
       <span id="brandLogo"><svg width="38" height="38" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#1f3fbf"/><path d="M20 33.5l8 8 16-18" fill="none" stroke="#fff" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="48" cy="16" r="6" fill="#ff7a2f"/></svg></span>
-      <div><b id="brandName">Oficio</b><span id="brandSub">Tu oficina en el móvil</span></div>
+      <div><b id="brandName">Mi Oficina</b><span id="brandSub">Tú trabaja, del papeleo nos encargamos.</span></div>
     </div>
     <div class="topact"><button data-go="ajustes" aria-label="Ajustes"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 8a4 4 0 1 0 4 4 4 4 0 0 0-4-4zm8.6 5.4.1-1.4-.1-1.4 2-1.6-2-3.4-2.4.9a8 8 0 0 0-2.4-1.4L15.4 3h-4l-.4 2.5a8 8 0 0 0-2.4 1.4l-2.4-.9-2 3.4 2 1.6-.1 1.4.1 1.4-2 1.6 2 3.4 2.4-.9a8 8 0 0 0 2.4 1.4l.4 2.5h4l.4-2.5a8 8 0 0 0 2.4-1.4l2.4.9 2-3.4z"/></svg></button></div>
     <nav class="nav" id="nav"></nav>
     <div class="side-foot">
       <span class="mode" id="modeLbl"><i></i>Conectando…</span>
       <span id="todayLbl"></span>
+      <span style="font-weight:600;color:var(--ink)">Tú trabaja, del papeleo nos encargamos.</span>
     </div>
   </aside>
   <main id="main"></main>
@@ -504,7 +505,7 @@ const PAISES={
  PR:{n:'Puerto Rico',cur:'USD',loc:'es-PR',tax:'IVU',tid:'ID fiscal',rates:[11.5,0]},
  US:{n:'Estados Unidos',cur:'USD',loc:'es-US',tax:'Sales tax',tid:'EIN',rates:[0]}
 };
-const APPN=(window.RT&&window.RT.appName)||'Oficio';
+const APPN=(window.RT&&window.RT.appName)||'Mi Oficina';
 const SA=!!(window.RT&&window.RT.standalone);
 const P=()=>PAISES[A().pais]||PAISES.ES;
 const isES=()=>(A().pais||'ES')==='ES';
@@ -948,7 +949,7 @@ function renderNav(){
  const masV=['asistente','facturas','agenda','trabajos','gastos','mensajes','ajustes'];const masB=vencidas+factPorHacer().length+presPorHacer().length;
  const tb=(id,l)=>`<button data-go="${id}" aria-current="${UI.view===id}"><span class="ti">${svg(id)}</span>${l}</button>`;
  $('#tabbar').innerHTML=tb('panel','Inicio')+tb('presupuestos','Presupuestos')+`<button class="plus" data-sheet="crear" aria-label="Crear algo nuevo"><span class="ti"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6z"/></svg></span>Nuevo</button>`+tb('clientes','Clientes')+`<button data-sheet="mas" aria-current="${masV.includes(UI.view)}"><span class="ti"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 4h6v6H4zm10 0h6v6h-6zM4 14h6v6H4zm10 0h6v6h-6z"/></svg></span>Más${masB?`<span class="badge">${masB}</span>`:''}</button>`;
- $('#brandName').textContent=A().nombre||APPN;$('#brandSub').textContent=A().oficio?A().oficio.charAt(0).toUpperCase()+A().oficio.slice(1):'Tu oficina en el móvil';
+ $('#brandName').textContent=A().nombre||APPN;$('#brandSub').textContent=A().oficio?A().oficio.charAt(0).toUpperCase()+A().oficio.slice(1):'Tú trabaja, del papeleo nos encargamos.';
  const bl=$('#brandLogo');const lg=A().logo||'';if(bl.dataset.logo!==lg){bl.dataset.logo=lg;if(lg)bl.innerHTML=`<img class="brand-logo" src="${esc(lg)}" alt="">`;else bl.innerHTML=bl.dataset.def||bl.innerHTML}if(!bl.dataset.def&&!lg)bl.dataset.def=bl.innerHTML;
  const ml=$('#modeLbl');ml.className='mode'+(MODE==='db'?' live':'');
  ml.innerHTML='<i></i>'+(MODE==='db'?'Datos guardados en tu cuenta':MODE==='local'?'Demo: datos solo en este navegador':'Conectando…');
