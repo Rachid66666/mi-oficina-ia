@@ -1667,7 +1667,7 @@ function bindOnboarding(){const f=document.getElementById('onb-form');if(!f||f.d
     const cat=(r&&Array.isArray(r.catalogo)?r.catalogo:[]).slice(0,20).map(x=>({id:uid('s'),nombre:String(x.nombre||'').slice(0,90),unidad:String(x.unidad||'ud').slice(0,20),precio:r2(+x.precio||0)})).filter(x=>x.nombre);
     aj.catalogo=cat;if(r&&r.formaPago)aj.formaPago=String(r.formaPago).slice(0,140);if(r&&+r.plazo)aj.plazo=Math.max(0,Math.min(120,Math.round(+r.plazo)))}}
   catch(err){console.warn(err)}
-  await put('ajustes',aj);ONB_BUSY=false;UI.view='asistente';toast(aj.catalogo.length?'Oficina lista: '+aj.catalogo.length+' servicios en tu catálogo':'Oficina lista. Añade tus precios en Ajustes');render()}}
+  await put('ajustes',aj);ONB_BUSY=false;UI.view=aj.catalogo.length?'asistente':'panel';toast(aj.catalogo.length?'Oficina lista: '+aj.catalogo.length+' servicios en tu catálogo':'Oficina lista. Añade tus precios en Ajustes');render()}}
 
 /* ======================= render y eventos ======================= */
 function render(){

@@ -136,7 +136,7 @@
       body: JSON.stringify(body)
     });
     let j = null; try { j = await r.json(); } catch (e) { }
-    if (!r.ok) { const er = (j && j.error) || {}; const e = new Error(er.message || 'La IA no responde (' + r.status + ')'); e.code = er.code || (r.status === 429 ? 'rate_limited' : 'error'); throw e; }
+    if (!r.ok) { const er = (j && j.error) || {}; const e = new Error(er.message || (r.status === 404 ? 'La IA todavía no está activada en este programa. Mientras, puedes hacer el presupuesto a mano con «Nuevo presupuesto».' : 'La IA no responde (' + r.status + ')')); e.code = er.code || (r.status === 429 ? 'rate_limited' : 'error'); throw e; }
     return j;
   }
   const blobToB64 = b => new Promise((res, rej) => { const fr = new FileReader(); fr.onload = () => res(String(fr.result).split(',')[1]); fr.onerror = rej; fr.readAsDataURL(b); });
