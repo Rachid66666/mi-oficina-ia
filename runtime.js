@@ -13,16 +13,36 @@
 
   /* ---------------- sesión ---------------- */
   let readyResolve; const ready = new Promise(r => (readyResolve = r));
+  const INVITE = (new URLSearchParams(location.search).get('codigo') || '').trim().toUpperCase();
+  function showBlocked() {
+    showLogin('login');
+    const el = document.getElementById('rt-login');
+    el.querySelector('#rt-f').innerHTML = '<h1>Cuenta pausada</h1><p class="sub">Tu acceso a este programa está pausado. Tus datos siguen guardados. Para reactivarlo, habla con quien te dio el código de acceso.</p><button type="button" id="rt-out">Salir</button>';
+    el.querySelector('#rt-out').onclick = async () => { await sb.auth.signOut(); location.href = location.pathname; };
+  }
   if (live) {
     sb.auth.onAuthStateChange((ev, session) => {
       if (ev === 'PASSWORD_RECOVERY') { showLogin('newpass'); return; }
       if (session && session.user) {
-        const first = !RT.user; RT.user = session.user; hideLogin();
-        if (first) readyResolve(); else if (RT.user.id !== session.user.id) location.reload();
+        const first = !RT.user; const prev = RT.user; RT.user = session.user;
+        if (first) {
+          Promise.all([sb.rpc('is_blocked').then(r => r.data === true, () => false), sb.rpc('is_admin').then(r => r.data === true, () => false)]).then(([blocked, admin]) => {
+            if (blocked) { showBlocked(); return; }
+            RT.isAdmin = admin; hideLogin(); readyResolve();
+          });
+        } else { hideLogin(); if (prev.id !== session.user.id) location.reload(); }
       } else if (RT.user) { location.reload(); }
     });
-    sb.auth.getSession().then(({ data }) => { if (!data.session) showLogin('login'); });
+    sb.auth.getSession().then(({ data }) => { if (!data.session) showLogin(INVITE ? 'signup' : 'login'); });
   } else readyResolve();
+  RT.admin = {
+    async call(fn, args) { const { data, error } = await sb.rpc(fn, args || {}); if (error) throw error; return data; },
+    createCodes(n, nota) { return this.call('admin_create_codes', { p_n: n, p_nota: nota || null }); },
+    listCodes() { return this.call('admin_list_codes'); },
+    revoke(code) { return this.call('admin_revoke_code', { p_code: code }); },
+    listUsers() { return this.call('admin_list_users'); },
+    setBlocked(id, b) { return this.call('admin_set_blocked', { p_user: id, p_blocked: b }); }
+  };
   RT.logout = async () => { if (sb) await sb.auth.signOut(); location.reload(); };
   document.addEventListener('click', e => { if (e.target.closest('[data-rtlogout]')) RT.logout(); });
 
@@ -52,16 +72,17 @@
     }
     const t = {
       login: ['Entrar', 'Escribe el email y la contraseña con los que te registraste.', 'Entrar'],
-      signup: ['Crea tu cuenta gratis', 'Solo tu email y una contraseña. Después te pedimos el nombre de tu negocio.', 'Crear mi cuenta'],
+      signup: ['Crea tu cuenta', 'Escribe tu código de acceso, tu email y una contraseña. Después te pedimos el nombre de tu negocio.', 'Crear mi cuenta'],
       reset: ['Recuperar contraseña', 'Te mandamos un email con un enlace para poner una nueva.', 'Enviar enlace'],
       newpass: ['Nueva contraseña', 'Escribe tu nueva contraseña.', 'Guardar contraseña']
     }[mode];
     const logo = '<svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#1f3fbf"/><path d="M20 33.5l8 8 16-18" fill="none" stroke="#fff" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="48" cy="16" r="6" fill="#ff7a2f"/></svg>';
     el.innerHTML = `<div class="top"><div class="lg">${logo}${esc(RT.appName)}</div><p class="tag"><b>Tú trabaja, del papeleo nos encargamos.</b><br>Presupuestos, facturas, clientes y agenda desde el móvil, en un minuto.</p></div>
       <form class="bx" id="rt-f"><h1>${t[0]}</h1><p class="sub">${t[1]}</p>
+      ${mode === 'signup' ? `<label for="rt-code">Código de acceso</label><input id="rt-code" type="text" autocomplete="off" autocapitalize="characters" placeholder="MO-XXXX-XXXX" value="${esc(INVITE)}" required><div style="font-size:.82rem;color:#566080;margin-top:4px">Te lo da quien te vende el programa. Sirve para una sola cuenta.</div>` : ''}
       ${mode !== 'newpass' ? '<label for="rt-em">Tu email</label><input id="rt-em" type="email" inputmode="email" autocomplete="email" placeholder="nombre@ejemplo.com" required>' : ''}
       ${mode !== 'reset' ? `<label for="rt-pw">${mode === 'login' ? 'Tu contraseña' : 'Elige una contraseña (mínimo 6 letras o números)'}</label><input id="rt-pw" type="password" minlength="6" autocomplete="${mode === 'login' ? 'current-password' : 'new-password'}" required>` : ''}
-      <button type="submit">${t[2]}</button>${mode === 'login' ? '<button type="button" class="alt" data-m="signup">Soy nuevo: crear cuenta gratis</button>' : ''}<div class="msg" id="rt-msg"></div>
+      <button type="submit">${t[2]}</button>${mode === 'login' ? '<button type="button" class="alt" data-m="signup">Tengo un código: crear mi cuenta</button>' : ''}<div class="msg" id="rt-msg"></div>
       <div class="lk">${mode === 'login' ? '<a data-m="reset">He olvidado la contraseña</a>' : mode === 'newpass' ? '' : '<a data-m="login">Ya tengo cuenta, quiero entrar</a>'}</div></form>
       ${mode === 'signup' || mode === 'login' ? '<ul><li><i>📄</i><span><b>Presupuestos en 1 minuto</b> con PDF para enviar por WhatsApp</span></li><li><i>💶</i><span><b>Facturas</b> con el número y los impuestos automáticos</span></li><li><i>🎙️</i><span><b>Háblale</b> y la IA lo apunta por ti</span></li></ul>' : ''}`;
     el.querySelectorAll('[data-m]').forEach(a => (a.onclick = () => showLogin(a.dataset.m)));
@@ -73,7 +94,10 @@
       try {
         if (mode === 'login') { const { error } = await sb.auth.signInWithPassword({ email: em, password: pw }); if (error) throw error; }
         if (mode === 'signup') {
-          const { data, error } = await sb.auth.signUp({ email: em, password: pw, options: { emailRedirectTo: location.origin + location.pathname } });
+          const code = (f.querySelector('#rt-code').value || '').trim().toUpperCase();
+          const { data: ok } = await sb.rpc('check_invite', { p_code: code });
+          if (ok === false) throw new Error('INVITE_INVALID');
+          const { data, error } = await sb.auth.signUp({ email: em, password: pw, options: { emailRedirectTo: location.origin + location.pathname, data: { invite: code } } });
           if (error) throw error;
           if (!data.session) say('Te hemos enviado un email. Ábrelo y pulsa el enlace para activar tu cuenta.', true);
         }
@@ -86,6 +110,7 @@
   function hideLogin() { const el = document.getElementById('rt-login'); if (el) el.remove(); }
   function trad(e) {
     const m = (e && e.message) || String(e);
+    if (/INVITE|Database error saving new user/i.test(m)) return 'Ese código de acceso no es válido o ya se ha usado. Pide uno nuevo a quien te vendió el programa.';
     if (/Invalid login/i.test(m)) return 'Email o contraseña incorrectos.';
     if (/Email not confirmed/i.test(m)) return 'Falta confirmar tu email: revisa tu bandeja de entrada.';
     if (/already registered/i.test(m)) return 'Ese email ya tiene cuenta. Entra con tu contraseña.';

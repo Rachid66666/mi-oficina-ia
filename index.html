@@ -20,7 +20,7 @@
   --accent:#1f3fbf; --accent-soft:#e8edff; --accent-ink:#ffffff; --pine:#1f3fbf; --pine-soft:#e8edff;
   --ok:#147a4b; --ok-soft:#dcf3e7; --warn:#a15c07; --warn-soft:#fdf0d9; --bad:#c0352b; --bad-soft:#fde3e0;
   --shadow:0 1px 2px rgba(15,23,51,.05),0 6px 20px rgba(15,23,51,.07);
-  --c-panel:#1f3fbf; --c-asistente:#7c3aed; --c-clientes:#0b7fab; --c-agenda:#0f8a5f; --c-trabajos:#b45309; --c-presupuestos:#e8590c; --c-facturas:#0d8a80; --c-gastos:#d6336c; --c-mensajes:#2f9e44; --c-ajustes:#55607a;
+  --c-panel:#1f3fbf; --c-asistente:#7c3aed; --c-clientes:#0b7fab; --c-agenda:#0f8a5f; --c-trabajos:#b45309; --c-presupuestos:#e8590c; --c-facturas:#0d8a80; --c-gastos:#d6336c; --c-mensajes:#2f9e44; --c-ajustes:#55607a; --c-control:#111827;
   --m-ink:#ffffff;
   --f-display:"Bricolage Grotesque","Public Sans",system-ui,sans-serif;
   --f-body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
@@ -369,6 +369,8 @@ details.more>.form{padding:0 14px 14px}
 .totals .grand{font-size:1.2rem}
 .newcli{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
 .tabbar,.topact{display:none}
+.ctl-last{margin-top:14px;border:2px dashed var(--accent);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px;background:var(--accent-soft)}
+.ctl-last b{font-size:1.7rem;letter-spacing:.06em;color:var(--accent)}
 .logo-pick{display:flex;flex-direction:column;gap:10px;border:1px dashed var(--line);border-radius:14px;padding:12px}
 .lp-colors{gap:8px}
 .lp-col{width:30px;height:30px;border-radius:50%;border:3px solid var(--surface);box-shadow:0 0 0 1px var(--line);cursor:pointer}
@@ -948,9 +950,11 @@ const VIEWS=[
  {id:'gastos',lbl:'Gastos',long:'e impuestos',ico:'M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 15v2h-2v-2a4 4 0 0 1-3-2l2-1a2 2 0 0 0 2 1c1 0 2-.4 2-1.2S13 12.5 12 12.2c-1.8-.5-3.6-1.1-3.6-3.2A3 3 0 0 1 11 6.2V5h2v1.2a3.4 3.4 0 0 1 2.6 1.8l-1.8 1a1.7 1.7 0 0 0-1.6-1c-.9 0-1.6.4-1.6 1s.8.9 2 1.3c1.8.5 3.4 1.3 3.4 3.3A3 3 0 0 1 13 17z'},
  {id:'mensajes',lbl:'Mensajes',ico:'M4 4h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H8l-4 4V6a2 2 0 0 1 2-2z'},
  {id:'ajustes',lbl:'Ajustes',ico:'M12 8a4 4 0 1 0 4 4 4 4 0 0 0-4-4zm8.6 5.4.1-1.4-.1-1.4 2-1.6-2-3.4-2.4.9a8 8 0 0 0-2.4-1.4L15.4 3h-4l-.4 2.5a8 8 0 0 0-2.4 1.4l-2.4-.9-2 3.4 2 1.6-.1 1.4.1 1.4-2 1.6 2 3.4 2.4-.9a8 8 0 0 0 2.4 1.4l.4 2.5h4l.4-2.5a8 8 0 0 0 2.4-1.4l2.4.9 2-3.4z'}
+,
+ {id:'control',lbl:'Control',long:'de ventas',admin:true,ico:'M12 1 3 5v6c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V5zm-1 15-4-4 1.4-1.4L11 13.2l5.6-5.6L18 9z'}
 ];
 const UI={pmonth:null,openWeek:null,view:'panel',q:'',selCli:null,week:mondayOf(TODAY),fFilter:'pendientes',out:{},msg:{},quarter:null};
-try{const v=localStorage.getItem('oficina-view');if(v&&VIEWS.some(x=>x.id===v))UI.view=v}catch(e){}
+try{const v=localStorage.getItem('oficina-view');if(v&&v!=='control'&&VIEWS.some(x=>x.id===v))UI.view=v}catch(e){}
 function go(view,extra){UI.view=view;Object.assign(UI,extra||{});try{localStorage.setItem('oficina-view',view)}catch(e){}render();window.scrollTo(0,0)}
 function toast(t){const el=document.createElement('div');el.className='toast';el.textContent=loc(t);document.body.appendChild(el);setTimeout(()=>el.remove(),2600)}
 async function copy(text){try{await navigator.clipboard.writeText(text);toast('Copiado')}catch(e){toast('Selecciona el texto y cópialo a mano')}}
@@ -958,7 +962,8 @@ async function copy(text){try{await navigator.clipboard.writeText(text);toast('C
 function renderNav(){
  const vencidas=S.facturas.filter(f=>factState(f).k==='bad').length;
  const hoy=S.citas.filter(c=>c.fecha===TODAY&&c.estado!=='hecha').length;
- $('#nav').innerHTML=VIEWS.map(v=>{let b='';if(v.id==='facturas'&&vencidas)b=`<span class="badge">${vencidas}</span>`;if(v.id==='agenda'&&hoy)b=`<span class="badge">${hoy}</span>`;const tp=v.id==='trabajos'?factPorHacer().length+presPorHacer().length:0;if(tp)b=`<span class="badge">${tp}</span>`;
+ const ISADM=!!(window.RT&&window.RT.isAdmin);
+ $('#nav').innerHTML=VIEWS.filter(v=>!v.admin||ISADM).map(v=>{let b='';if(v.id==='facturas'&&vencidas)b=`<span class="badge">${vencidas}</span>`;if(v.id==='agenda'&&hoy)b=`<span class="badge">${hoy}</span>`;const tp=v.id==='trabajos'?factPorHacer().length+presPorHacer().length:0;if(tp)b=`<span class="badge">${tp}</span>`;
   return `<button data-go="${v.id}" aria-current="${UI.view===v.id}"><span class="icobox" style="--m:var(--c-${v.id})"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="${v.ico}"/></svg></span><span>${v.lbl}${v.long?`<span class="lbl-long"> ${v.long}</span>`:''}</span>${b}</button>`}).join('');
  const svg=id=>{const v=VIEWS.find(x=>x.id===id);return `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="${v.ico}"/></svg>`};
  const masV=['asistente','facturas','agenda','trabajos','gastos','mensajes','ajustes'];const masB=vencidas+factPorHacer().length+presPorHacer().length;
@@ -1014,7 +1019,7 @@ function openSheet(kind){
  if(kind==='crear'){title='¿Qué quieres crear?';
   html=`<div class="grid3">${it('data-newpres=""','presupuestos','Presupuesto')}${it('data-newfac=""','facturas','Factura')}${it('data-newcli','clientes','Cliente')}${it('data-newcita=""','agenda','Visita')}${it('data-newgasto','gastos','Gasto')}${it('data-snapgasto','gastos','Foto de ticket')}${it('data-newtrab="porhacer"','trabajos','Trabajo')}${it('data-go="asistente"','asistente','Pedírselo a la IA')}${it('data-go="mensajes"','mensajes','Mensaje')}</div>`}
  else{title='Todo el programa';const vencidas=S.facturas.filter(f=>factState(f).k==='bad').length;const tp=factPorHacer().length+presPorHacer().length;
-  html=`<div class="grid3">${it('data-go="panel"','panel','Inicio')}${it('data-go="presupuestos"','presupuestos','Presupuestos')}${it('data-go="facturas"','facturas','Facturas',vencidas)}${it('data-go="clientes"','clientes','Clientes')}${it('data-go="agenda"','agenda','Agenda')}${it('data-go="trabajos"','trabajos','Trabajos',tp)}${it('data-go="gastos"','gastos','Gastos')}${it('data-go="asistente"','asistente','Asistente IA')}${it('data-go="mensajes"','mensajes','Mensajes')}</div>
+  html=`<div class="grid3">${it('data-go="panel"','panel','Inicio')}${it('data-go="presupuestos"','presupuestos','Presupuestos')}${it('data-go="facturas"','facturas','Facturas',vencidas)}${it('data-go="clientes"','clientes','Clientes')}${it('data-go="agenda"','agenda','Agenda')}${it('data-go="trabajos"','trabajos','Trabajos',tp)}${it('data-go="gastos"','gastos','Gastos')}${it('data-go="asistente"','asistente','Asistente IA')}${it('data-go="mensajes"','mensajes','Mensajes')}${window.RT&&window.RT.isAdmin?it('data-go="control"','control','Control de ventas'):''}</div>
   <div class="sheet-foot"><button class="btn" data-go="ajustes">Ajustes y mis datos</button>${window.RT&&window.RT.user?`<button class="btn ghost" data-rtlogout>Cerrar sesión</button>`:''}</div>`}
  $('#modalRoot').innerHTML=`<div class="overlay sheet-ov" id="ov"><div class="sheet" role="dialog" aria-modal="true" aria-label="${esc(title)}"><div class="sheet-grab"></div><h2>${esc(title)}</h2>${loc(html)}</div></div>`;
  const ov=$('#ov');ov.addEventListener('click',e=>{if(e.target===ov||e.target.closest('button'))closeModal()});
@@ -1344,7 +1349,7 @@ function makePDF(kind,d,cl){
  const wm=()=>{if(!a.logo||a.marcaAgua===false)return;try{const pr=doc.getImageProperties(a.logo);const s=120,w=pr.width>=pr.height?s:s*pr.width/pr.height,h=pr.width>=pr.height?s*pr.height/pr.width:s;
    doc.saveGraphicsState();doc.setGState(new doc.GState({opacity:0.06}));doc.addImage(a.logo,a.logo.startsWith('data:image/jpeg')?'JPEG':'PNG',(W-w)/2,(297-h)/2+10,w,h,'wm','FAST');doc.restoreGraphicsState()}catch(e){}};
  wm();{const _ap=doc.addPage.bind(doc);doc.addPage=(...r)=>{const x=_ap(...r);wm();return x}}
- let lx=M;if(a.logo){try{const pr=doc.getImageProperties(a.logo);const h=16,w=Math.min(40,h*pr.width/pr.height);doc.addImage(a.logo,a.logo.startsWith('data:image/jpeg')?'JPEG':'PNG',M,y-7,w,h);lx=M+w+4}catch(e){}}
+ let lx=M;if(a.logo){try{const pr=doc.getImageProperties(a.logo);const h=16,w=Math.min(40,h*pr.width/pr.height);doc.addImage(a.logo,a.logo.startsWith('data:image/jpeg')?'JPEG':'PNG',M,y-7,w,h,'wm','FAST');lx=M+w+4}catch(e){}}
  doc.setFillColor(...yel);doc.rect(0,0,W,4,'F');
  doc.setFont('helvetica','bold');doc.setFontSize(16);doc.setTextColor(...pine);doc.text(a.nombre||'',lx,y);
  doc.setFontSize(13);doc.setTextColor(20,20,20);doc.text((isF?'FACTURA ':'PRESUPUESTO ')+(d.numero||''),W-M,y,{align:'right'});
@@ -1849,6 +1854,44 @@ function viewAjustes(){const a=A();
   ${S.clientes.some(c=>c.ejemplo)||S.facturas.some(c=>c.ejemplo)?`<button class="btn danger" id="aj-clear">Borrar los datos de ejemplo</button> <span class="small muted">Quita clientes, visitas, facturas, presupuestos y gastos de muestra para empezar con los tuyos.</span>`:'<span class="pill ok">Sin datos de ejemplo</span>'}</div>`;
 }
 let catDraft=null;
+/* ======================= CONTROL DE VENTAS (solo el dueño) ======================= */
+const CTL={codes:null,users:null,err:'',last:null,loading:false};
+const appLink=c=>location.origin+location.pathname+(c?'?codigo='+encodeURIComponent(c):'');
+function inviteText(c){return `¡Hola${c.nota?' '+c.nota:''}! Este es tu código de acceso a ${APPN}: ${c.code}\n\nEntra aquí para crear tu cuenta (el código ya va puesto):\n${appLink(c.code)}\n\nSirve para una sola cuenta.`}
+async function loadControl(){if(!window.RT||!RT.admin||CTL.loading)return;CTL.loading=true;
+ try{const [c,u]=await Promise.all([RT.admin.listCodes(),RT.admin.listUsers()]);CTL.codes=c||[];CTL.users=u||[];CTL.err=''}
+ catch(e){CTL.err=/admin_list|function|does not exist|schema cache/i.test(e.message||'')?'Falta preparar la base de datos: ejecuta el archivo supabase/codigos.sql en Supabase.':(e.message||String(e))}
+ CTL.loading=false;if(UI.view==='control')render()}
+function codeState(c){return c.used_by||c.used_email?['ok','Usado'+(c.used_email?' por '+c.used_email:'')]:c.revoked?['bad','Anulado']:['info','Libre']}
+function viewControl(){
+ if(!(window.RT&&RT.isAdmin))return head('','Control','Esta sección es solo para el dueño del programa.','');
+ if(CTL.codes===null&&!CTL.err){loadControl();return head('','Control de ventas','Cargando…','')}
+ const codes=CTL.codes||[],users=CTL.users||[];const used=codes.filter(c=>c.used_by||c.used_email).length,free=codes.filter(c=>!c.used_by&&!c.used_email&&!c.revoked).length;
+ const L=CTL.last;
+ return head('','Control de ventas','Crea un código por cada venta y envíaselo al cliente. Cada código sirve para crear una sola cuenta.',`<button class="btn" data-ctlreload>Actualizar</button>`)+
+ (CTL.err?`<div class="card"><p class="pill bad" style="white-space:normal">${esc(CTL.err)}</p></div>`:'')+
+ `<div class="card ctl-new"><h2>Nuevo código de acceso</h2>
+  <form class="row" id="ctl-form" style="align-items:flex-end"><label class="f" style="flex:1 1 220px"><span>Para quién es (nombre o teléfono, opcional)</span><input type="text" id="ctl-nota" placeholder="Ej.: Juan, fontanero de Getafe" autocomplete="off"></label><button class="btn primary big" type="submit">Crear código</button></form>
+  ${L?`<div class="ctl-last"><span class="small muted">Código nuevo${L.nota?' para '+esc(L.nota):''}</span><b class="num">${esc(L.code)}</b>
+   <div class="row"><a class="btn wa" href="${esc(waUrl('',inviteText(L))||'https://wa.me/?text='+encodeURIComponent(inviteText(L)))}" target="_blank" rel="noopener">${IC_WA}Enviar por WhatsApp</a><a class="btn" href="mailto:?subject=${encodeURIComponent('Tu acceso a '+APPN)}&body=${encodeURIComponent(inviteText(L))}">${IC_MAIL}Enviar por email</a><button class="btn" data-ctlcopy="${esc(L.code)}">Copiar mensaje</button></div></div>`:''}</div>
+ <div class="kpis"><div class="kpi" style="--m:var(--c-control)"><span class="l">Ventas (códigos usados)</span><span class="v">${used}</span></div><div class="kpi" style="--m:var(--c-presupuestos)"><span class="l">Códigos libres</span><span class="v">${free}</span><span class="s">Enviados y sin usar todavía</span></div><div class="kpi" style="--m:var(--c-clientes)"><span class="l">Cuentas</span><span class="v">${users.length}</span></div><div class="kpi" style="--m:var(--c-gastos)"><span class="l">Bloqueadas</span><span class="v">${users.filter(u=>u.blocked).length}</span></div></div>
+ <h2 class="sec-t">Códigos</h2><div class="card" style="padding:8px 12px"><div class="tablewrap"><table><thead><tr><th>Código</th><th>Para</th><th>Creado</th><th>Estado</th><th></th></tr></thead><tbody>
+  ${codes.map(c=>{const [k,t]=codeState(c);const lib=k==='info';return `<tr><td class="num"><b>${esc(c.code)}</b></td><td>${esc(c.nota||'—')}</td><td class="num">${fDate(String(c.created_at).slice(0,10))}</td><td><span class="pill ${k}">${esc(t)}</span>${c.used_at?`<div class="small muted">${fDate(String(c.used_at).slice(0,10))}</div>`:''}</td><td>${lib?`<span class="row"><button class="btn sm" data-ctlshow="${esc(c.code)}">Enviar</button><button class="btn sm ghost danger" data-ctlrevoke="${esc(c.code)}">Anular</button></span>`:''}</td></tr>`}).join('')||'<tr><td colspan="5" class="empty">Aún no has creado códigos.</td></tr>'}
+ </tbody></table></div></div>
+ <h2 class="sec-t">Cuentas</h2><div class="card" style="padding:8px 12px"><div class="tablewrap"><table><thead><tr><th>Empresa</th><th>Email</th><th>Alta</th><th>Último acceso</th><th>Código</th><th>Datos</th><th></th></tr></thead><tbody>
+  ${users.map(u=>`<tr${u.blocked?' style="opacity:.6"':''}><td><b>${esc(u.empresa||'(sin configurar)')}</b><div class="small muted">${esc([u.oficio,u.pais&&PAISES[u.pais]?PAISES[u.pais].n:u.pais].filter(Boolean).join(' · '))}</div></td><td style="overflow-wrap:anywhere">${esc(u.email)}${u.confirmed?'':'<div class="small" style="color:var(--warn)">Email sin confirmar</div>'}</td><td class="num">${fDate(String(u.created_at).slice(0,10))}</td><td class="num">${u.last_sign_in_at?fDate(String(u.last_sign_in_at).slice(0,10)):'—'}</td><td class="num">${esc(u.code||'—')}</td><td class="num">${u.docs}</td><td>${window.RT.user&&u.user_id===window.RT.user.id?'<span class="pill info">Tú</span>':`<button class="btn sm${u.blocked?'':' danger'}" data-ctlblock="${u.user_id}" data-b="${u.blocked?0:1}">${u.blocked?'Desbloquear':'Bloquear'}</button>`}</td></tr>`).join('')||'<tr><td colspan="7" class="empty">Todavía no hay cuentas.</td></tr>'}
+ </tbody></table></div></div>`}
+function bindControl(){const f=$('#ctl-form');if(!f)return;
+ f.onsubmit=async e=>{e.preventDefault();const b=f.querySelector('button');b.disabled=true;
+  try{const r=await RT.admin.createCodes(1,$('#ctl-nota').value);CTL.last=r&&r[0];toast('Código creado');CTL.codes=null;await loadControl()}catch(er){toast('No se pudo crear: '+(er.message||er))}b.disabled=false}}
+document.addEventListener('click',async e=>{const t=e.target.closest('[data-ctlreload],[data-ctlcopy],[data-ctlshow],[data-ctlrevoke],[data-ctlblock]');if(!t)return;const d=t.dataset;
+ if(d.ctlreload!=null){CTL.codes=null;CTL.err='';render();return}
+ if(d.ctlcopy){const c=(CTL.codes||[]).find(x=>x.code===d.ctlcopy)||CTL.last;copy(inviteText(c));return}
+ if(d.ctlshow){CTL.last=(CTL.codes||[]).find(x=>x.code===d.ctlshow);render();window.scrollTo({top:0,behavior:'smooth'});return}
+ if(d.ctlrevoke){openModal('Anular código',`<p>¿Anular el código <b>${esc(d.ctlrevoke)}</b>? Ya no se podrá usar para crear una cuenta.</p>`,`<button class="btn" data-close>No</button><button class="btn primary" id="ctl-yes">Sí, anular</button>`,ov=>{$('#ctl-yes',ov).onclick=async()=>{try{await RT.admin.revoke(d.ctlrevoke);closeModal();toast('Código anulado');if(CTL.last&&CTL.last.code===d.ctlrevoke)CTL.last=null;CTL.codes=null;loadControl()}catch(er){toast(er.message||String(er))}}});return}
+ if(d.ctlblock){const b=d.b==='1';const u=(CTL.users||[]).find(x=>x.user_id===d.ctlblock)||{};
+  openModal(b?'Bloquear cuenta':'Desbloquear cuenta',`<p>${b?`¿Bloquear a <b>${esc(u.empresa||u.email)}</b>? No podrá entrar ni ver sus datos hasta que lo desbloquees. Sus datos no se borran.`:`¿Desbloquear a <b>${esc(u.empresa||u.email)}</b>? Volverá a entrar con normalidad.`}</p>`,`<button class="btn" data-close>Cancelar</button><button class="btn primary" id="ctl-yes">${b?'Bloquear':'Desbloquear'}</button>`,ov=>{$('#ctl-yes',ov).onclick=async()=>{try{await RT.admin.setBlocked(d.ctlblock,b);closeModal();toast(b?'Cuenta bloqueada':'Cuenta desbloqueada');CTL.codes=null;loadControl()}catch(er){toast(er.message||String(er))}}});return}
+});
 /* ---------- logos ya hechos ---------- */
 const LOGO_ICONS={
  rayo:['Electricidad','M13 2 4 14h7l-1 8 9-12h-7z'],
@@ -1922,7 +1965,7 @@ function render(){
  renderNav();
  const m=$('#main');
  if(MODE==='connecting'){m.innerHTML='<p class="muted">Cargando tus datos…</p>';return}
- const v={asistente:viewAsistente,trabajos:viewTrabajos,panel:viewPanel,clientes:viewClientes,agenda:viewAgenda,presupuestos:viewPresupuestos,facturas:viewFacturas,gastos:viewGastos,mensajes:viewMensajes,ajustes:viewAjustes}[UI.view]||viewPanel;
+ const v={asistente:viewAsistente,trabajos:viewTrabajos,panel:viewPanel,clientes:viewClientes,agenda:viewAgenda,presupuestos:viewPresupuestos,facturas:viewFacturas,gastos:viewGastos,mensajes:viewMensajes,ajustes:viewAjustes,control:viewControl}[UI.view]||viewPanel;
  m.style.setProperty('--m','var(--c-'+UI.view+')');
  const onb=typeof needsOnboarding==='function'&&needsOnboarding();document.body.classList.toggle('onb',!!onb);
  m.innerHTML=onb?viewOnboarding():loc(v());
@@ -1930,6 +1973,7 @@ function render(){
  if(typeof needsOnboarding==='function'&&needsOnboarding()){bindOnboarding();return}
  syncFijos();
  if(UI.view==='ajustes')bindAjustes();
+ if(UI.view==='control')bindControl();
  if(UI.view==='presupuestos')bindChat();
  if(UI.view==='clientes'){const q=$('#cliQ');q.oninput=()=>{UI.q=q.value;const pos=q.selectionStart;render();const n=$('#cliQ');n.focus();n.setSelectionRange(pos,pos)}}
  if(UI.view==='mensajes'){const sync=()=>{UI.msg={clienteId:$('#mg-cli').value,motivo:$('#mg-mot').value,canal:$('#mg-canal').value,extra:$('#mg-extra').value}};

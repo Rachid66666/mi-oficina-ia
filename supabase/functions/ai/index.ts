@@ -46,6 +46,8 @@ Deno.serve(async (req) => {
 
   const limit = Number(Deno.env.get("AI_DAILY_LIMIT") ?? "150");
   const admin = createClient(url, service);
+  const { data: au } = await admin.from("app_users").select("blocked").eq("user_id", user.id).maybeSingle();
+  if (au && au.blocked) return fail("blocked", "Tu cuenta está pausada. Habla con quien te dio el código de acceso.", 403);
   if (Deno.env.get("BILLING_OFF") !== "1") {
     const plan = await planOf(admin, user);
     if (!plan.paid && !plan.trial) return fail("subscription", "Tu prueba gratis ha terminado. Suscríbete para seguir usando la IA (tus datos siguen guardados).", 402);

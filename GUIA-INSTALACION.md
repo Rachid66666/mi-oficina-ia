@@ -113,6 +113,24 @@ Para probarlo, crea una cuenta, pulsa **Suscribirme** y paga con la tarjeta de p
 
 ---
 
+---
+
+## Paso 6. Códigos de acceso: controlar a quién vendes el programa
+
+Con esto nadie puede crearse una cuenta sin un código que le des tú. Cada código sirve para **una sola cuenta**, así que sabes exactamente cuántas veces lo has vendido.
+
+1. Si todavía no tienes tu propia cuenta en el programa, créala primero (antes de este paso aún no hace falta código).
+2. En Supabase, abre **SQL Editor**, pega todo el contenido de `supabase/codigos.sql` y pulsa **Run**.
+3. En el mismo SQL Editor, hazte dueño con esta línea, cambiando el email por el de tu cuenta, y pulsa **Run**:
+   `insert into public.app_admins(user_id) select id from auth.users where email = 'TU_EMAIL' on conflict do nothing;`
+4. Entra en el programa y recarga. En **Más** te aparece **Control de ventas**. Ahí puedes:
+   - **Crear un código** por cada venta y enviarlo por WhatsApp o por email. El mensaje lleva un enlace con el código ya puesto.
+   - Ver qué códigos están libres, cuáles se han usado y por quién.
+   - Ver todas las cuentas: empresa, email, alta y último acceso.
+   - **Bloquear** una cuenta, por ejemplo si deja de pagar. No podrá entrar ni usar la IA, pero sus datos no se borran. Puedes desbloquearla cuando quieras.
+
+Las cuentas que ya existían antes de este paso siguen funcionando sin código.
+
 ## Lo que cuesta al mes (aproximado)
 
 | Servicio | Para empezar | Con clientes de pago |
