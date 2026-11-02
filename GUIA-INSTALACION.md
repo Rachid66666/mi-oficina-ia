@@ -129,7 +129,7 @@ Con esto nadie puede crearse una cuenta sin un código que le des tú. Cada cód
    - Ver todas las cuentas: empresa, email, alta y último acceso.
    - **Bloquear** una cuenta, por ejemplo si deja de pagar. No podrá entrar ni usar la IA, pero sus datos no se borran. Puedes desbloquearla cuando quieras.
 
-Las cuentas que ya existían antes de este paso siguen funcionando sin código.
+Las cuentas que ya existían antes de este paso (menos la tuya) tendrán que poner un código la próxima vez que entren. Crea uno para cada una en Control de ventas y envíaselo.
 
 ## Lo que cuesta al mes (aproximado)
 

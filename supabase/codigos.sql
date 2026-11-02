@@ -38,7 +38,7 @@ alter table public.app_users enable row level security;
 drop policy if exists "ver mi estado" on public.app_users;
 create policy "ver mi estado" on public.app_users for select using (user_id = auth.uid());
 
--- Las cuentas que ya existían quedan registradas (sin código).
+-- Las cuentas que ya existían quedan registradas sin código: tendrán que poner uno al entrar (menos el dueño).
 insert into public.app_users(user_id, email, created_at)
 select id, email, created_at from auth.users on conflict do nothing;
 
@@ -76,10 +76,37 @@ $$;
 grant execute on function public.check_invite(text) to anon, authenticated;
 
 -- ---------- una cuenta bloqueada no puede leer ni guardar datos ----------
+-- Acceso: el dueño siempre; los demás solo si no están bloqueados y han puesto un código.
+-- Las cuentas que ya existían sin código tienen que poner uno al entrar (función redeem_invite).
+create or replace function public.has_access() returns boolean
+language sql stable security definer set search_path = public as $$
+  select is_admin() or exists(select 1 from app_users where user_id = auth.uid() and not blocked and code is not null)
+$$;
+
+create or replace function public.needs_code() returns boolean
+language sql stable security definer set search_path = public as $$
+  select not is_admin() and not exists(select 1 from app_users where user_id = auth.uid() and code is not null)
+$$;
+
+create or replace function public.redeem_invite(p_code text) returns boolean
+language plpgsql security definer set search_path = public as $$
+declare c text := upper(trim(coalesce(p_code, ''))); em text;
+begin
+  if auth.uid() is null then return false; end if;
+  if exists(select 1 from app_users where user_id = auth.uid() and code is not null) then return true; end if;
+  select email into em from auth.users where id = auth.uid();
+  update invite_codes set used_by = auth.uid(), used_email = em, used_at = now()
+   where code = c and used_by is null and not revoked;
+  if not found then return false; end if;
+  insert into app_users(user_id, email, code) values (auth.uid(), em, c)
+  on conflict (user_id) do update set code = excluded.code;
+  return true;
+end $$;
+
 drop policy if exists "cada usuario sus datos" on public.docs;
 create policy "cada usuario sus datos" on public.docs
-  for all using (user_id = auth.uid() and not public.is_blocked())
-  with check (user_id = auth.uid() and not public.is_blocked());
+  for all using (user_id = auth.uid() and public.has_access())
+  with check (user_id = auth.uid() and public.has_access());
 
 -- ---------- funciones del panel del dueño ----------
 create or replace function public.admin_create_codes(p_n int, p_nota text default null)
@@ -143,4 +170,4 @@ end $$;
 revoke all on function public.admin_create_codes(int, text), public.admin_list_codes(), public.admin_revoke_code(text),
   public.admin_list_users(), public.admin_set_blocked(uuid, boolean) from public, anon;
 grant execute on function public.admin_create_codes(int, text), public.admin_list_codes(), public.admin_revoke_code(text),
-  public.admin_list_users(), public.admin_set_blocked(uuid, boolean), public.is_admin(), public.is_blocked() to authenticated;
+  public.admin_list_users(), public.admin_set_blocked(uuid, boolean), public.is_admin(), public.is_blocked(), public.has_access(), public.needs_code(), public.redeem_invite(text) to authenticated;

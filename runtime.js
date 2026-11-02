@@ -14,6 +14,21 @@
   /* ---------------- sesión ---------------- */
   let readyResolve; const ready = new Promise(r => (readyResolve = r));
   const INVITE = (new URLSearchParams(location.search).get('codigo') || '').trim().toUpperCase();
+  function showNeedsCode() {
+    showLogin('login');
+    const el = document.getElementById('rt-login');
+    el.querySelector('#rt-f').innerHTML = `<h1>Pon tu código de acceso</h1><p class="sub">Para seguir usando el programa necesitas tu código de acceso. Te lo da quien te vendió el programa. Tus datos siguen guardados.</p>
+      <label for="rt-code">Código de acceso</label><input id="rt-code" type="text" autocomplete="off" autocapitalize="characters" placeholder="MO-XXXX-XXXX" value="${esc(INVITE)}" required>
+      <button type="submit">Activar mi cuenta</button><div class="msg" id="rt-msg"></div><div class="lk"><a id="rt-out">Salir</a></div>`;
+    const f = el.querySelector('#rt-f'), msg = el.querySelector('#rt-msg');
+    el.querySelector('#rt-out').onclick = async () => { await sb.auth.signOut(); location.href = location.pathname; };
+    f.onsubmit = async e => {
+      e.preventDefault(); const b = f.querySelector('button'); b.disabled = true; msg.textContent = '';
+      const { data, error } = await sb.rpc('redeem_invite', { p_code: f.querySelector('#rt-code').value });
+      if (data === true) { msg.className = 'msg ok'; msg.textContent = 'Cuenta activada.'; setTimeout(() => (location.href = location.pathname), 600); return; }
+      msg.className = 'msg err'; msg.textContent = error ? (error.message || 'No se pudo comprobar') : 'Ese código no es válido o ya se ha usado.'; b.disabled = false;
+    };
+  }
   function showBlocked() {
     showLogin('login');
     const el = document.getElementById('rt-login');
@@ -26,8 +41,9 @@
       if (session && session.user) {
         const first = !RT.user; const prev = RT.user; RT.user = session.user;
         if (first) {
-          Promise.all([sb.rpc('is_blocked').then(r => r.data === true, () => false), sb.rpc('is_admin').then(r => r.data === true, () => false)]).then(([blocked, admin]) => {
+          Promise.all([sb.rpc('is_blocked').then(r => r.data === true, () => false), sb.rpc('is_admin').then(r => r.data === true, () => false), sb.rpc('needs_code').then(r => r.data === true, () => false)]).then(([blocked, admin, needs]) => {
             if (blocked) { showBlocked(); return; }
+            if (needs) { showNeedsCode(); return; }
             RT.isAdmin = admin; hideLogin(); readyResolve();
           });
         } else { hideLogin(); if (prev.id !== session.user.id) location.reload(); }
