@@ -212,6 +212,15 @@
       return { id };
     }
   };
+  // Enlace para que el cliente descargue el PDF (caduca a los 60 días). Solo con cuenta real.
+  RT.shareLink = async (blob, filename) => {
+    if (!sb || !RT.user) return null;
+    const path = RT.user.id + '/docs/' + Date.now().toString(36) + '-' + String(filename || 'documento.pdf').replace(/[^\w.-]+/g, '_');
+    const { error } = await sb.storage.from('fotos').upload(path, blob, { contentType: 'application/pdf' });
+    if (error) return null;
+    const { data } = await sb.storage.from('fotos').createSignedUrl(path, 60 * 86400, { download: filename });
+    return data && data.signedUrl || null;
+  };
   // Las fotos son privadas: se piden con un enlace temporal y se repinta la pantalla al tenerlo.
   RT.assetUrl = id => {
     if (!sb) return '';

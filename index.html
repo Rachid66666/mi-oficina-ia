@@ -369,6 +369,11 @@ details.more>.form{padding:0 14px 14px}
 .totals .grand{font-size:1.2rem}
 .newcli{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
 .tabbar,.topact{display:none}
+.sendbox{display:flex;flex-direction:column;gap:10px}
+.sendbox .btn.big{justify-content:center;width:100%}
+.sendsum{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--surface-2);border-radius:12px;padding:12px 14px;font-size:1.05rem}
+.sendsum .num{font-weight:700;font-size:1.2rem}
+.btn svg{flex:none}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 .newcli[hidden],[hidden]{display:none!important}
 .sheet-ov{align-items:flex-end;padding:0}
@@ -1246,7 +1251,7 @@ function docEditor(kind,doc){
   <label class="f"><span>IVA %</span><input type="number" id="de-iva" value="${esc(d.iva)}"></label>
   ${isF?`<label class="f"><span>Retención IRPF % (solo si facturas a empresas como profesional)</span><input type="number" id="de-irpf" value="${esc(d.irpf||0)}"></label>`:''}
  </div></details>`,
- `${d.id?`<button class="btn danger ghost" id="de-del" style="margin-right:auto">Borrar</button>`:''}${d.id?`<button class="btn" id="de-view">${isF?'Ver factura':'Ver y copiar'}</button>`:''}${!isF&&d.id&&d.estado!=='rechazado'?`<button class="btn" id="de-tof">Convertir en factura</button>`:''}<button class="btn" data-close>Cancelar</button><button class="btn primary" id="de-save">Guardar</button>`,ov=>{
+ `${d.id?`<button class="btn danger ghost" id="de-del" style="margin-right:auto">Borrar</button>`:''}${d.id?`<button class="btn" id="de-view">${isF?'Ver factura':'Ver y copiar'}</button>`:''}${!isF&&d.id&&d.estado!=='rechazado'?`<button class="btn" id="de-tof">Convertir en factura</button>`:''}<button class="btn" data-close>Cancelar</button>${d.id?`<button class="btn wa" id="de-send">${IC_WA}Enviar</button>`:''}<button class="btn primary" id="de-save">${d.id?'Guardar':'Guardar y enviar'}</button>`,ov=>{
   $('#de-cli',ov).onchange=e=>{const nw=e.target.value==='__new'||!e.target.value;$('#de-newcli',ov).hidden=!nw;if(nw)$('#de-nc-nombre',ov).focus()};
   const read=()=>{d.clienteId=$('#de-cli',ov).value;d.numero=$('#de-num',ov).value.trim();d.fecha=$('#de-fecha',ov).value;d.estado=$('#de-est',ov).value;d.iva=+$('#de-iva',ov).value||0;
    if(isF){d.vence=$('#de-vence',ov).value;d.irpf=+$('#de-irpf',ov).value||0}else{d.validez=+$('#de-val',ov).value||30;d.descripcion=$('#de-desc',ov).value.trim()}};
@@ -1263,7 +1268,8 @@ function docEditor(kind,doc){
   const save=async()=>{read();if(!d.clienteId||d.clienteId==='__new'){const nm=$('#de-nc-nombre',ov).value.trim();if(!nm){toast('Escribe el nombre del cliente');$('#de-newcli',ov).hidden=false;$('#de-nc-nombre',ov).focus();return false}
     const nc={id:uid('c'),nombre:nm,telefono:$('#de-nc-tel',ov).value.trim(),pueblo:'',contacto:'',tipo:'Particular',frecuencia:'Puntual',notas:''};await put('clientes',nc);d.clienteId=nc.id;const sel=$('#de-cli',ov);sel.insertAdjacentHTML('afterbegin',`<option value="${nc.id}">${esc(nm)}</option>`);sel.value=nc.id;$('#de-newcli',ov).hidden=true}if(!d.id)d.id=uid(isF?'f':'p');
    if(isF&&d.estado==='cobrada'&&!d.cobradaEl)d.cobradaEl=TODAY;await put(isF?'facturas':'presupuestos',d);await linkDoc(isF,d);return true};
-  $('#de-save',ov).onclick=async()=>{if(await save()){closeModal();toast(isF?'Factura guardada':'Presupuesto guardado')}};
+  $('#de-save',ov).onclick=async()=>{if(await save()){closeModal();if(UI.view)render();sendModal(isF?'f':'p',d)}};
+  const sn=$('#de-send',ov);if(sn)sn.onclick=async()=>{if(await save()){closeModal();render();sendModal(isF?'f':'p',d,(isF?'Enviar factura ':'Enviar presupuesto ')+d.numero)}};
   const v=$('#de-view',ov);if(v)v.onclick=async()=>{if(await save())isF?invoiceView(d):presupuestoText(d)};
   const tf=$('#de-tof',ov);if(tf)tf.onclick=async()=>{read();d.estado='aceptado';await put('presupuestos',d);await linkDoc(false,d);docEditor('f',{clienteId:d.clienteId,lineas:d.lineas,presupuestoId:d.id})};
   const dl=$('#de-del',ov);if(dl)dl.onclick=async()=>{if(dl.dataset.sure){await del(isF?'facturas':'presupuestos',d.id);closeModal()}else{dl.dataset.sure=1;dl.textContent='¿Seguro? Pulsa otra vez'}};
@@ -1381,8 +1387,42 @@ async function gmailDraft(kind,d,cl){cl=cl||cli(d.clienteId);let doc;try{doc=mak
   openModal('Borrador creado en Gmail',`<p>El email con el PDF adjunto está en tus <b>borradores de Gmail</b>${input.to?` dirigido a <b>${esc(input.to[0])}</b>`:', sin destinatario (este cliente no tiene email en su ficha)'}. Revísalo y pulsa enviar desde Gmail.</p>`,`<a class="btn primary" href="${esc(url)}" target="_blank" rel="noopener">Abrir en Gmail</a><button class="btn" data-close>Cerrar</button>`);
   if(kind==='p'&&d.estado==='borrador')put('presupuestos',{...d,estado:'enviado'})}
  catch(e){const c=e&&e.code;toast(c==='server_not_connected'||c==='server_not_found'?'Gmail no está conectado en tu cuenta de Claude (Ajustes > Conectores).':c==='not_granted'||c==='consent_required'?'No has dado permiso a la página para usar Gmail.':'Gmail: '+((e&&e.message)||c))}}
-function docActions(kind,d,cl){cl=cl||cli(d.clienteId);const wa=waUrl(cl.telefono,waDocText(kind,d,cl));
- return `<button class="btn sm primary" data-pdf="${kind}:${d.id}">Descargar PDF</button>${wa?`<a class="btn sm wa" href="${esc(wa)}" target="_blank" rel="noopener" data-wasent="${kind}:${d.id}">WhatsApp</a>`:''}<button class="btn sm" data-gmail="${kind}:${d.id}">${SA?'Enviar por email':'Borrador en Gmail'}</button>`}
+const IC_WA='<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.5-3.9-4.7-4.1-.1-.2-1.1-1.5-1.1-2.9s.7-2.1 1-2.4c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.2.1.6-.1 1.1z"/></svg>';
+const IC_MAIL='<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm9 7.2L4 7.5V17h16V7.5z"/></svg>';
+const IC_PDF='<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 3v10.2l3.6-3.6L17 11l-5 5-5-5 1.4-1.4 3.6 3.6V3zM5 19h14v2H5z"/></svg>';
+function docActions(kind,d,cl){
+ return `<button class="btn sm primary" data-pdf="${kind}:${d.id}">${IC_PDF}Descargar PDF</button><button class="btn sm wa" data-send="wa:${kind}:${d.id}">${IC_WA}WhatsApp con PDF</button><button class="btn sm" data-send="mail:${kind}:${d.id}">${IC_MAIL}Email con PDF</button>`}
+function markSent(kind,d){if(kind==='p'&&d.estado==='borrador')put('presupuestos',{...d,estado:'enviado'})}
+/* Enviar el PDF completo: en el móvil se abre el menú de compartir del teléfono con el PDF adjunto
+   (eliges WhatsApp, Gmail, Correo...). Si el aparato no permite adjuntar, se descarga el PDF y el
+   mensaje lleva además un enlace para que el cliente lo descargue. */
+async function sendDoc(canal,kind,d,cl){cl=cl||cli(d.clienteId);let doc;try{doc=makePDF(kind,d,cl)}catch(e){toast(e.message);return}
+ const name=pdfName(kind,d,cl);const blob=doc.output('blob');const tipo=kind==='f'?'Factura':'Presupuesto';
+ const text=loc(canal==='wa'?waDocText(kind,d,cl):coverText(kind,d,cl));const subject=`${tipo} ${d.numero} · ${A().nombre}`;
+ let file=null;try{file=new File([blob],name,{type:'application/pdf'})}catch(e){}
+ if(file&&navigator.canShare&&navigator.canShare({files:[file]})){
+  try{await navigator.share({files:[file],title:subject,text});markSent(kind,d);if($('.sendbox'))closeModal();toast('Enviado');return}
+  catch(e){if(e&&e.name==='AbortError')return;
+   if(e&&e.name==='NotAllowedError'){openModal(`Enviar ${tipo.toLowerCase()} ${d.numero}`,`<p>El PDF está listo. Pulsa el botón y elige <b>${canal==='wa'?'WhatsApp':'tu app de correo'}</b> y el contacto.</p>`,`<button class="btn primary big" id="sd-go">${canal==='wa'?IC_WA+'Enviar por WhatsApp':IC_MAIL+'Enviar por email'}</button>`,ov=>{$('#sd-go',ov).onclick=async()=>{try{await navigator.share({files:[file],title:subject,text});markSent(kind,d);closeModal();toast('Enviado')}catch(er){if(!er||er.name!=='AbortError')toast('No se pudo compartir: '+(er.message||er.name))}}});return}}
+ }
+ // Ordenador o navegador sin compartir archivos: PDF descargado + enlace de descarga en el mensaje
+ const w=window.open('about:blank','_blank');
+ const dl=await getDownloads();if(dl){try{await dl.save({filename:name,data:await blob.arrayBuffer()})}catch(e){}}
+ let link=null;if(window.RT&&RT.shareLink){toast('Preparando el enlace del PDF…');try{link=await RT.shareLink(blob,name)}catch(e){}}
+ const full=link?`${text}\n\nDescarga el ${tipo.toLowerCase()} en PDF aquí: ${link}`:text;
+ const url=canal==='wa'?(waUrl(cl.telefono,full)||'https://wa.me/?text='+encodeURIComponent(full))
+  :'https://mail.google.com/mail/?view=cm&fs=1&to='+encodeURIComponent((cl.email||'').trim())+'&su='+encodeURIComponent(subject)+'&body='+encodeURIComponent(full);
+ if(w)w.location.href=url;else window.open(url,'_blank');
+ markSent(kind,d);if($('.sendbox'))closeModal();
+ toast(link?'Listo: el mensaje lleva el enlace al PDF. Si quieres, adjunta también el PDF descargado.':'PDF descargado: adjúntalo al mensaje que se abre.');
+}
+function sendModal(kind,d,title){const cl=cli(d.clienteId);const t=tot(d);
+ openModal(title||((kind==='f'?'Factura ':'Presupuesto ')+d.numero+' guardado'),`<div class="sendbox"><div class="sendsum"><b>${esc(cl.nombre||'')}</b><span class="num">${eur(t.total)}</span></div>
+  <p class="muted">¿Qué quieres hacer ahora?</p>
+  <button class="btn wa big" data-send="wa:${kind}:${d.id}">${IC_WA}Enviar por WhatsApp</button>
+  <button class="btn big" data-send="mail:${kind}:${d.id}">${IC_MAIL}Enviar por email</button>
+  <button class="btn primary big" data-pdf="${kind}:${d.id}">${IC_PDF}Descargar PDF</button>
+  <p class="small muted">Se envía el PDF completo, con tu logo, los conceptos y los totales.</p></div>`,`<button class="btn" data-close>Ahora no</button>`)}
 
 /* ======================= CHAT DE PRESUPUESTOS ======================= */
 const DRAFT_TOOL={name:'preparar_presupuesto',description:'Crea o actualiza el borrador del presupuesto que se muestra al usuario con botones para guardar, descargar en PDF y enviar. Llámala cada vez que tengas una versión completa o el usuario pida cambios; manda siempre el presupuesto entero.',
@@ -1436,7 +1476,7 @@ function draftHTML(){const dr=UI.chat.draft;if(!dr)return '';const t=tot(dr);con
  <div class="tablewrap"><table><thead><tr><th>Concepto</th><th class="r">Cant.</th><th class="r">Precio</th><th class="r">Importe</th></tr></thead><tbody>${dr.lineas.map(l=>`<tr><td>${esc(l.concepto)}</td><td class="r num">${l.cantidad}${l.unidad?' '+esc(l.unidad):''}</td><td class="r num">${eur(l.precio)}</td><td class="r num">${eur(l.cantidad*l.precio)}</td></tr>`).join('')}</tbody></table></div>
  ${totalsHTML(dr)}
  ${dr.condiciones?`<p class="small muted">${esc(dr.condiciones)}</p>`:''}
- <div class="row"><button class="btn sm primary" data-chatpdf>Descargar PDF</button><button class="btn sm wa" data-chatwa>WhatsApp</button><button class="btn sm" data-chatgmail>Borrador en Gmail</button><button class="btn sm" data-chatsave>${saved?'Guardar cambios':'Guardar en presupuestos'}</button>${saved?`<button class="btn sm ghost" data-editp="${saved.id}">Abrir y editar</button>`:''}</div></div>`}
+ <div class="row"><button class="btn sm primary" data-chatpdf>${IC_PDF}Descargar PDF</button><button class="btn sm wa" data-chatwa>${IC_WA}WhatsApp con PDF</button><button class="btn sm" data-chatgmail>${IC_MAIL}Email con PDF</button><button class="btn sm" data-chatsave>${saved?'Guardar cambios':'Guardar en presupuestos'}</button>${saved?`<button class="btn sm ghost" data-editp="${saved.id}">Abrir y editar</button>`:''}</div></div>`}
 function paintDraft(){const el=document.getElementById('chat-draft');const html=draftHTML();if(el)el.outerHTML=html;else{const l=document.getElementById('chat-log');if(l)l.insertAdjacentHTML('beforeend',html)}scrollChat()}
 async function saveDraft(){const c=UI.chat,dr=c&&c.draft;if(!dr)return null;
  let cl=dr.clienteId&&S.clientes.find(x=>x.id===dr.clienteId);const k=dr.cliente||{};
@@ -1879,7 +1919,7 @@ document.addEventListener('click',e=>{
  if(d.route){routeFor(d.route);return}
  if(d.avisar!=null){avisarManana();return}
  if(d.pdf||d.gmail){const [k,id]=(d.pdf||d.gmail).split(':');const doc=(k==='f'?S.facturas:S.presupuestos).find(x=>x.id===id);if(doc){d.pdf?downloadPDF(k,doc):gmailDraft(k,doc)}return}
- if(d.wasent){const [k,id]=d.wasent.split(':');const x=k==='p'&&S.presupuestos.find(p=>p.id===id);if(x&&x.estado==='borrador')put('presupuestos',{...x,estado:'enviado'});return}
+ if(d.send){const [c,k,id]=d.send.split(':');const doc=(k==='f'?S.facturas:S.presupuestos).find(x=>x.id===id);if(doc)sendDoc(c,k,doc);return}
  if(d.chatnew!=null){newChat();render();return}
  if(d.asisnew!=null){newAsis();render();return}
  if(d.asisidea){sendAsis(d.asisidea);return}
@@ -1887,11 +1927,8 @@ document.addEventListener('click',e=>{
  if(d.goweek){go('agenda',{week:mondayOf(d.goweek)});return}
  if(d.chatidea){sendChat(d.chatidea);return}
  if(d.chatsave!=null){saveDraft().then(r=>{if(r){toast('Guardado como presupuesto '+r.p.numero);render()}});return}
- if(d.chatpdf!=null||d.chatgmail!=null){const isPdf=d.chatpdf!=null;saveDraft().then(r=>{if(!r)return;render();isPdf?downloadPDF('p',r.p,r.cl):gmailDraft('p',r.p,r.cl)});return}
- if(d.chatwa!=null){const w=null;saveDraft().then(r=>{if(!r)return;const u=waUrl(r.cl.telefono,waDocText('p',r.p,r.cl));
-   if(r.p.estado==='borrador')put('presupuestos',{...r.p,estado:'enviado'});
-   if(!u){if(w)w.close();toast('Este cliente no tiene móvil. Añádelo en su ficha o dile el número al asistente.');return}
-   if(w){w.location.href=u}else{openModal('Enviar por WhatsApp',`<p>Pulsa para abrir WhatsApp con el mensaje escrito. Recuerda adjuntar el PDF que has descargado.</p>`,`<a class="btn wa" href="${esc(u)}" target="_blank" rel="noopener">Abrir WhatsApp</a>`)}render()});return}
+ if(d.chatpdf!=null||d.chatgmail!=null){const isPdf=d.chatpdf!=null;saveDraft().then(r=>{if(!r)return;render();isPdf?downloadPDF('p',r.p,r.cl):sendModal('p',r.p,'Presupuesto '+r.p.numero+' listo')});return}
+ if(d.chatwa!=null){saveDraft().then(r=>{if(!r)return;render();sendModal('p',r.p,'Presupuesto '+r.p.numero+' listo')});return}
  if(d.gcalon!=null||d.gcaloff!=null){const on=d.gcalon!=null;const cur=S.ajustes.find(a=>a.id==='negocio')||{};const nw={...AJUSTES_DEF,...cur,id:'negocio',gcal:on};
   const i=S.ajustes.findIndex(a=>a.id==='negocio');if(i>=0)S.ajustes[i]=nw;else S.ajustes.push(nw);
   if(on){gcalWatch(true)}else{if(GC.unsub)GC.unsub();GC.unsub=null;GC.state='off';GC.events=[];GC.watchKey=''}
