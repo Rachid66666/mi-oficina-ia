@@ -1,6 +1,6 @@
 // Función "billing": estado del plan, abrir el pago de la suscripción y abrir el portal de cliente.
 // Secretos: STRIPE_SECRET_KEY, STRIPE_PRICE_ID (el precio mensual creado en Stripe), TRIAL_DAYS opcional.
-import { createClient } from "npm:@supabase/supabase-js@2.45.4";
+import { createClient } from "npm:@supabase/supabase-js@2.117.3";
 
 // ---- stripe ----
 // Llamadas a la API de Stripe sin librerías (formulario codificado).

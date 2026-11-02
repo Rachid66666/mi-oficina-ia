@@ -5,7 +5,7 @@
 //   AI_MODEL           opcional, por defecto claude-sonnet-5-5
 //   AI_DAILY_LIMIT     opcional, consultas de IA por usuario y día (por defecto 150)
 //   TRIAL_DAYS         opcional, días de prueba gratis (por defecto 14); pon BILLING_OFF=1 para no exigir pago
-import { createClient } from "npm:@supabase/supabase-js@2.45.4";
+import { createClient } from "npm:@supabase/supabase-js@2.117.3";
 
 // ---- plan ----
 // Reglas del plan: prueba gratis desde el alta y después suscripción activa en Stripe.

@@ -1,6 +1,6 @@
 // Función "stripe-webhook": Stripe avisa aquí de pagos, renovaciones y bajas.
 // Despliégala SIN verificación JWT (Stripe no inicia sesión). Secretos: STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET.
-import { createClient } from "npm:@supabase/supabase-js@2.45.4";
+import { createClient } from "npm:@supabase/supabase-js@2.117.3";
 
 // ---- stripe ----
 // Llamadas a la API de Stripe sin librerías (formulario codificado).
